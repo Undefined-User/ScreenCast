@@ -1,6 +1,6 @@
-set(CMAKE_HOST_SYSTEM "Windows-6.1.7601")
+set(CMAKE_HOST_SYSTEM "Windows-10.0.15063")
 set(CMAKE_HOST_SYSTEM_NAME "Windows")
-set(CMAKE_HOST_SYSTEM_VERSION "6.1.7601")
+set(CMAKE_HOST_SYSTEM_VERSION "10.0.15063")
 set(CMAKE_HOST_SYSTEM_PROCESSOR "AMD64")
 
 include("D:/android/ndk-bundle/build/cmake/android.toolchain.cmake")

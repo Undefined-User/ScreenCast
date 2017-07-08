@@ -64,7 +64,7 @@ public class Dashboards extends DashboardFragment implements TileListener {
         Category others = new Category();
         others.titleRes = R.string.category_others;
         if (Factory.get().integratedAD()) others.addTile(new WithADTile(getContext(), this));
-        others.addTile(new StorageTile(getContext(), this));
+        others.addTile(new StorageTile(getActivity(), this));
         others.addTile(new LicenseTile(getContext(), this));
         others.addTile(new AuthorInfoTile(getContext(), this));
         categories.add(audio);

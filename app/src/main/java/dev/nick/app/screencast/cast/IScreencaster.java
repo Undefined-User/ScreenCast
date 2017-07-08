@@ -5,6 +5,8 @@ import android.media.projection.MediaProjection;
 public interface IScreencaster {
     boolean start(MediaProjection projection, boolean withAudio);
 
+    void setProjection(MediaProjection projection);
+
     void stop();
 
     boolean isCasting();

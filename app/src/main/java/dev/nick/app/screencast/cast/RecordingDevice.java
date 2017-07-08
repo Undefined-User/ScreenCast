@@ -28,7 +28,6 @@ import android.media.MediaRecorder;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
@@ -45,7 +44,6 @@ import dev.nick.app.screencast.provider.SettingsProvider;
 class RecordingDevice extends EncoderDevice {
 
     private static final String LOGTAG = "RecordingDevice";
-    private static final File RECORDINGS_DIR = new File(Environment.getExternalStorageDirectory().getPath(), SettingsProvider.STORAGE_MP4_FOLDER_NAME);
     private File path;
     private boolean mRecordAudio;
 
@@ -55,7 +53,8 @@ class RecordingDevice extends EncoderDevice {
         // Prepare all the output metadata
         String videoDate = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date(System.currentTimeMillis()));
         // the directory which holds all recording files
-        path = new File(RECORDINGS_DIR, context.getString(R.string.recorder_file_prefix) + videoDate + ".mp4");
+        path = new File(SettingsProvider.get().storageRootPath(),
+                context.getString(R.string.recorder_file_prefix) + videoDate + ".mp4");
     }
 
     /**

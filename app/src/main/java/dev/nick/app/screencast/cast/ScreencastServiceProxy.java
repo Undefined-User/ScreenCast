@@ -26,6 +26,15 @@ public class ScreencastServiceProxy extends ServiceProxy implements IScreencaste
         });
     }
 
+    public static void setProjection(final Context context, final MediaProjection projection) {
+        ThreadUtil.getWorkThreadHandler().post(new Runnable() {
+            @Override
+            public void run() {
+                new ScreencastServiceProxy(context).setProjection(projection);
+            }
+        });
+    }
+
     public static void stop(final Context context) {
         ThreadUtil.getWorkThreadHandler().post(new Runnable() {
             @Override
@@ -71,6 +80,16 @@ public class ScreencastServiceProxy extends ServiceProxy implements IScreencaste
             }
         }, "start");
         return true;
+    }
+
+    @Override
+    public void setProjection(final MediaProjection projection) {
+        setTask(new ProxyTask() {
+            @Override
+            public void run() throws RemoteException {
+                mService.setProjection(projection);
+            }
+        });
     }
 
     @Override

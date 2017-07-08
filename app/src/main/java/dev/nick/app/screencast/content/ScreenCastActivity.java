@@ -59,7 +59,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dev.nick.app.screencast.R;
-import dev.nick.app.screencast.app.Factory;
 import dev.nick.app.screencast.camera.CameraPreviewServiceProxy;
 import dev.nick.app.screencast.camera.ThreadUtil;
 import dev.nick.app.screencast.cast.IScreencaster;
@@ -80,6 +79,7 @@ import permissions.dispatcher.RuntimePermissions;
 public class ScreenCastActivity extends TransactionSafeActivity {
 
     private static final int PERMISSION_CODE = 1;
+    private static final int PERMISSION_CODE_CREATE = 2;
     protected boolean mReadyToRun;
     protected Logger mLogger;
     private MediaProjection mMediaProjection;
@@ -105,6 +105,26 @@ public class ScreenCastActivity extends TransactionSafeActivity {
                 (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
 
         initUI();
+
+        ScreencastServiceProxy.watch(getApplicationContext(), new IScreencaster.ICastWatcher() {
+            @Override
+            public void onStartCasting() {
+                LoggerManager.getLogger(ScreenCastActivity.class).debug("onStartCasting");
+                refreshState(true);
+            }
+
+            @Override
+            public void onStopCasting() {
+                if (!mReadyToRun || SettingsProvider.get().firstStart()) return;
+                refreshState(false);
+                ThreadUtil.getMainThreadHandler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        ScreenCastActivityPermissionsDispatcher.readVideosWithCheck(ScreenCastActivity.this);
+                    }
+                }, 1000);// Waiting for the Scanner.
+            }
+        });
     }
 
     protected void initUI() {
@@ -145,12 +165,11 @@ public class ScreenCastActivity extends TransactionSafeActivity {
         if (mRemainingSeconds != 0) mFab.hide();
 
         showVideoList();
-        if (Factory.get().integratedAD() && (SettingsProvider.get().firstStart()
-                || SettingsProvider.get().getAppVersionNum() < SettingsProvider.APP_VERSION_INT)) {
+        if ((SettingsProvider.get().firstStart() || SettingsProvider.get().getAppVersionNum()
+                < SettingsProvider.APP_VERSION_INT)) {
             showRetation();
         } else {
             ScreenCastActivityPermissionsDispatcher.readVideosWithCheck(ScreenCastActivity.this);
-            SettingsProvider.get().setFirstStart(false);
         }
     }
 
@@ -178,36 +197,17 @@ public class ScreenCastActivity extends TransactionSafeActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         ScreenCastActivityPermissionsDispatcher.readVideosWithCheck(ScreenCastActivity.this);
+                    }
+                })
+                .setNegativeButton(R.string.perm_require_no_mind, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
                         SettingsProvider.get().setFirstStart(false);
+                        ScreenCastActivityPermissionsDispatcher.readVideosWithCheck(ScreenCastActivity.this);
                     }
                 })
                 .setCancelable(false)
                 .show();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        ScreencastServiceProxy.watch(getApplicationContext(), new IScreencaster.ICastWatcher() {
-            @Override
-            public void onStartCasting() {
-                LoggerManager.getLogger(ScreenCastActivity.class).debug("onStartCasting");
-                refreshState(true);
-            }
-
-            @Override
-            public void onStopCasting() {
-                if (!mReadyToRun || SettingsProvider.get().firstStart()) return;
-                refreshState(false);
-                ThreadUtil.getMainThreadHandler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        ScreenCastActivityPermissionsDispatcher.readVideosWithCheck(ScreenCastActivity.this);
-                    }
-                }, 1000);// Waiting for the Scanner.
-            }
-        });
-
     }
 
     @Override
@@ -330,25 +330,35 @@ public class ScreenCastActivity extends TransactionSafeActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode != PERMISSION_CODE) {
-            LoggerManager.getLogger(getClass()).error("Unknown request code: " + requestCode);
+        if (requestCode != PERMISSION_CODE && requestCode != PERMISSION_CODE_CREATE) {
             return;
         }
         if (resultCode != RESULT_OK) {
-            Toast.makeText(this,
-                    "User denied screen sharing permission", Toast.LENGTH_SHORT).show();
             return;
         }
-        mMediaProjection = mProjectionManager.getMediaProjection(resultCode, data);
-        mMediaProjection.registerCallback(new MediaProjection.Callback() {
-            @Override
-            public void onStop() {
-                super.onStop();
-                onProjectionStop();
-            }
-        }, null);
-        startRecording();
+        if (requestCode == PERMISSION_CODE) {
+            mMediaProjection = mProjectionManager.getMediaProjection(resultCode, data);
+            mMediaProjection.unregisterCallback(projectionCallback);
+            mMediaProjection.registerCallback(projectionCallback, null);
+            ScreencastServiceProxy.setProjection(this, mMediaProjection);
+
+            startRecording();
+        } else {
+            mMediaProjection = mProjectionManager.getMediaProjection(resultCode, data);
+            mMediaProjection.unregisterCallback(projectionCallback);
+            mMediaProjection.registerCallback(projectionCallback, null);
+
+            ScreencastServiceProxy.setProjection(this, mMediaProjection);
+        }
     }
+
+    private MediaProjection.Callback projectionCallback = new MediaProjection.Callback() {
+        @Override
+        public void onStop() {
+            super.onStop();
+            onProjectionStop();
+        }
+    };
 
     private void onProjectionStop() {
         mMediaProjection = null;

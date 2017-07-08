@@ -1,5 +1,8 @@
 package dev.nick.app.screencast.content;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,9 +15,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.nononsenseapps.filepicker.Utils;
+
+import java.io.File;
+import java.util.List;
+
 import dev.nick.app.screencast.R;
 import dev.nick.app.screencast.content.tiles.Dashboards;
 import dev.nick.app.screencast.provider.SettingsProvider;
+import dev.nick.logger.LoggerManager;
 
 public class DrawerScreencastActivity extends ScreenCastActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -89,4 +98,23 @@ public class DrawerScreencastActivity extends ScreenCastActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         return true;
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == SettingsProvider.REQUEST_CODE_FILE_PICKER && resultCode == Activity.RESULT_OK) {
+            // Use the provided utility method to parse the result
+            List<Uri> files = Utils.getSelectedFilesFromResult(data);
+            File file = Utils.getFileForUri(files.get(0));
+            // Do something with the result...
+            onStorageDirPick(file);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void onStorageDirPick(File dir) {
+        LoggerManager.getLogger(getClass())
+                .debug("onStorageDirPick:" + dir);
+        SettingsProvider.get().setStorageRootPath(dir.getPath());
+    }
+
 }

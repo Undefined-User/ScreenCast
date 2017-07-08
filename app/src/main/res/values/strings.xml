@@ -26,6 +26,7 @@
     <string name="file_size">File size: %s</string>
     <string name="video_length_s">%s</string>
     <string name="not_enough_storage">Not enough storage available</string>
+    <string name="not_projection">Missing media projection permission</string>
     <string name="start_description">Tap to start recording the screen of your device</string>
     <string name="stop_description">Tap to stop recording</string>
     <string name="with_audio">Include audio from microphone</string>
@@ -66,7 +67,8 @@
     <string name="title_app_license">License</string>
     <string name="title_with_ad">Show AD</string>
     <string name="title_perm_require">Permissions</string>
-    <string name="summary_perm_require">Inorder to show ADs, we are requiring LOCATION and PHONE permissions, and you can choose to deny if you mind this</string>
+    <string name="summary_perm_require">Please check to allow me Capture your screen at the next request</string>
+    <string name="perm_require_no_mind">No remind</string>
     <string name="summary_audio">Include audio from mic</string>
     <string name="summary_camera">Show a floating camera preview window on the UI interface</string>
     <string name="summary_auto_hide">Close app when recording</string>

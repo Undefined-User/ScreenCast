@@ -155,11 +155,6 @@ public class ScreencastService extends Service implements IScreencaster, Handler
     public void onCreate() {
         mLogger = LoggerManager.getLogger(getClass());
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            mLogger.error("Bad android version.");
-            return;
-        }
-
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 
@@ -196,6 +191,10 @@ public class ScreencastService extends Service implements IScreencaster, Handler
             sensorManager.unregisterListener(sensorEventListener);
         }
         super.onDestroy();
+        if (mProjection != null) try {
+            mProjection.stop();
+        } catch (Exception ignored) {
+        }
     }
 
     private boolean hasAvailableSpace() {
@@ -337,6 +336,23 @@ public class ScreencastService extends Service implements IScreencaster, Handler
 
     @Override
     public boolean start(final MediaProjection projection, final boolean withAudio) {
+
+        mLogger.debug("start with pro:" + projection);
+
+        if (projection != null) {
+            mProjection = projection;
+        }
+
+        if (mProjection == null) {
+            ThreadUtil.getMainThreadHandler().post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getApplicationContext(), R.string.not_projection, Toast.LENGTH_LONG).show();
+                }
+            });
+            return false;
+        }
+
         if (!hasAvailableSpace()) {
             ThreadUtil.getMainThreadHandler().post(new Runnable() {
                 @Override
@@ -349,10 +365,15 @@ public class ScreencastService extends Service implements IScreencaster, Handler
         ThreadUtil.getWorkThreadHandler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                startInternal(projection, withAudio);
+                startInternal(mProjection, withAudio);
             }
         }, SettingsProvider.get().startDelay());
         return true;
+    }
+
+    @Override
+    public void setProjection(MediaProjection projection) {
+        mProjection = projection;
     }
 
     boolean startInternal(MediaProjection projection, boolean withAudio) {
@@ -479,11 +500,16 @@ public class ScreencastService extends Service implements IScreencaster, Handler
         return false;
     }
 
-    class ServiceBinder extends Binder implements IScreencaster {
+    private class ServiceBinder extends Binder implements IScreencaster {
 
         @Override
         public boolean start(MediaProjection projection, boolean withAudio) {
             return ScreencastService.this.start(projection, withAudio);
+        }
+
+        @Override
+        public void setProjection(MediaProjection projection) {
+            ScreencastService.this.setProjection(projection);
         }
 
         @Override

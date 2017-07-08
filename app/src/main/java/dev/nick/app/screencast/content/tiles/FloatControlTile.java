@@ -4,6 +4,9 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.widget.RelativeLayout;
 
+import java.util.Observable;
+import java.util.Observer;
+
 import dev.nick.app.screencast.R;
 import dev.nick.app.screencast.control.FloatingControllerServiceProxy;
 import dev.nick.app.screencast.provider.SettingsProvider;
@@ -17,7 +20,7 @@ public class FloatControlTile extends QuickTile {
         super(context, listener);
 
         this.titleRes = R.string.title_float_window;
-        this.iconRes = R.drawable.ic_settings_white_24dp;
+        this.iconRes = R.drawable.ic_bubble_chart;
 
         this.tileView = new SwitchTileView(context) {
             @Override
@@ -30,6 +33,13 @@ public class FloatControlTile extends QuickTile {
                 } else {
                     new FloatingControllerServiceProxy(context).stop(context);
                 }
+
+                SettingsProvider.get().addObserver(new Observer() {
+                    @Override
+                    public void update(Observable o, Object arg) {
+                        setChecked(SettingsProvider.get().showFloatControl());
+                    }
+                });
             }
 
             @Override

@@ -4,9 +4,11 @@ import android.annotation.TargetApi;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.os.Build;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 
+import java.io.File;
 import java.util.Observable;
 
 import dev.nick.app.screencast.BuildConfig;
@@ -22,8 +24,10 @@ public abstract class SettingsProvider extends Observable {
     public static final int APP_VERSION_INT = BuildConfig.VERSION_CODE;
     public static final long START_DELAY_DEFAULT = 5000;
 
-    public static final String STORAGE_MP4_FOLDER_NAME = "ScreenRecorder";
-    public static final String STORAGE_GIF_FOLDER_NAME = "ScreenRecorder/gif";
+    public static final int REQUEST_CODE_FILE_PICKER = 0x102;
+
+    private static final String STORAGE_MP4_FOLDER_NAME = "ScreenRecorder";
+    private static final String STORAGE_GIF_FOLDER_NAME = "ScreenRecorder/gif";
 
     private static Impl sImpl;
 
@@ -31,6 +35,10 @@ public abstract class SettingsProvider extends Observable {
         if (sImpl == null) sImpl = new Impl();
         return sImpl;
     }
+
+    public abstract String storageRootPath();
+
+    public abstract void setStorageRootPath(String path);
 
     public abstract boolean withAudio();
 
@@ -137,6 +145,22 @@ public abstract class SettingsProvider extends Observable {
         private static final String KEY_APP_VERSION = "settings.app.code";
         private static final String SHOW_TOUCHES = "show_touches";
         private static final String SHOW_FLOAT_CONTROL = "show_float_ctl";
+        private static final String SHOW_ROOT_PATH = "root_path";
+
+        @Override
+        public String storageRootPath() {
+            return PreferenceManager.getDefaultSharedPreferences(Factory.get().getApplicationContext())
+                    .getString(SHOW_ROOT_PATH, Environment.getExternalStorageDirectory().getPath()
+                            + File.separator + STORAGE_MP4_FOLDER_NAME);
+        }
+
+        @Override
+        public void setStorageRootPath(String path) {
+            PreferenceManager.getDefaultSharedPreferences(Factory.get().getApplicationContext())
+                    .edit().putString(SHOW_ROOT_PATH, path).apply();
+            setChanged();
+            notifyObservers();
+        }
 
         @Override
         public boolean withAudio() {
@@ -426,6 +450,8 @@ public abstract class SettingsProvider extends Observable {
         public void setShowFloatControl(boolean show) {
             PreferenceManager.getDefaultSharedPreferences(Factory.get().getApplicationContext())
                     .edit().putBoolean(SHOW_FLOAT_CONTROL, show).apply();
+            setChanged();
+            notifyObservers();
         }
     }
 }

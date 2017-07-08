@@ -2,7 +2,6 @@ package dev.nick.app.screencast.provider;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.text.format.DateUtils;
@@ -14,10 +13,10 @@ import java.util.List;
 import dev.nick.app.screencast.R;
 import dev.nick.app.screencast.modle.Video;
 import dev.nick.app.screencast.tools.MiscUtils;
+import dev.nick.logger.Logger;
+import dev.nick.logger.LoggerManager;
 
 public class VideoProvider {
-
-    private static final File RECORDINGS_DIR = new File(Environment.getExternalStorageDirectory().getPath(), SettingsProvider.STORAGE_MP4_FOLDER_NAME);
 
     private Context context;
 
@@ -56,7 +55,8 @@ public class VideoProvider {
                                     .getColumnIndexOrThrow(MediaStore.Video.Media.DATA));
                     File file = new File(path);
                     if (!file.exists()) continue;
-                    if (!file.getParentFile().equals(RECORDINGS_DIR)) {
+                    if (!file.getParentFile().getPath().equals(SettingsProvider.get().storageRootPath())) {
+                        LoggerManager.getLogger(getClass()).debug("Ignored file:" + file);
                         continue;
                     }
                     long duration = cursor

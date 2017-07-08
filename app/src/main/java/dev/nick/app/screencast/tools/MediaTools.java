@@ -40,7 +40,7 @@ public abstract class MediaTools {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             open.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            contentUri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".fileProvider", imageFile);
+            contentUri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", imageFile);
 
         } else {
             contentUri = Uri.parse("file://" + imageFile.getAbsolutePath());

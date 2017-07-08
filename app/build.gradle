@@ -9,8 +9,8 @@ android {
         applicationId "dev.nick.app.screencast"
         minSdkVersion 21
         targetSdkVersion 25
-        versionCode 132
-        versionName "13.2-BETA"
+        versionCode 133
+        versionName "13.3"
 
         externalNativeBuild {
             cmake {
@@ -59,4 +59,6 @@ dependencies {
     compile 'com.github.Tornaco:FFMpeg-Android-Java:1.0-BETA'
     // https://github.com/czy1121/settingscompat
     compile 'com.github.czy1121:settingscompat:1.1.4'
+
+    compile 'com.nononsenseapps:filepicker:4.1.0'
 }

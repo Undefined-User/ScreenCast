@@ -6,7 +6,10 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
+import dev.nick.app.screencast.provider.SettingsProvider;
 import dev.nick.app.screencast.widget.FloatView;
+import dev.nick.logger.Logger;
+import dev.nick.logger.LoggerManager;
 import ezy.assist.compat.SettingsCompat;
 
 /**
@@ -15,7 +18,7 @@ import ezy.assist.compat.SettingsCompat;
 
 public class FloatingControlService extends Service implements FloatingController {
 
-    FloatView floatView;
+    private FloatView floatView;
 
     @Nullable
     @Override
@@ -36,6 +39,7 @@ public class FloatingControlService extends Service implements FloatingControlle
             show();
         } else {
             SettingsCompat.manageDrawOverlays(this);
+            SettingsProvider.get().setShowFloatControl(false);
         }
 
         return START_STICKY;
@@ -50,6 +54,7 @@ public class FloatingControlService extends Service implements FloatingControlle
     @Override
     public void show() {
         floatView.attach();
+        LoggerManager.getLogger(getClass()).debug("Show float control");
     }
 
     @Override
