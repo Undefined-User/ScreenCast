@@ -11,24 +11,12 @@ android {
         targetSdkVersion 25
         versionCode 137
         versionName "13.7"
-
-        externalNativeBuild {
-            cmake {
-                cppFlags "-std=c++11 -fexceptions"
-            }
-        }
     }
 
     buildTypes {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-
-    externalNativeBuild {
-        cmake {
-            path "CMakeLists.txt"
         }
     }
 

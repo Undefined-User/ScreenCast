@@ -13,6 +13,10 @@ android:
   - extra-android-m2repository
   - extra-android-support
 
+
+script:
+ - "./gradlew assembleDebug"
+
 before_script:
  - mkdir -p "$ANDROID_HOME/licenses"
  - cp ./android-sdk-license "$ANDROID_HOME/licenses/"
