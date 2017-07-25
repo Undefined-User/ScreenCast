@@ -1,3 +1,0 @@
-D:/android/workspace/java/ScreenCast/app/.externalNativeBuild/cmake/release/x86/CMakeFiles/native-lib.dir
-D:/android/workspace/java/ScreenCast/app/.externalNativeBuild/cmake/release/x86/CMakeFiles/edit_cache.dir
-D:/android/workspace/java/ScreenCast/app/.externalNativeBuild/cmake/release/x86/CMakeFiles/rebuild_cache.dir

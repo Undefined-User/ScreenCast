@@ -1,3 +1,0 @@
-D:/android/workspace/java/ScreenCast/app/.externalNativeBuild/cmake/release/armeabi-v7a/CMakeFiles/native-lib.dir
-D:/android/workspace/java/ScreenCast/app/.externalNativeBuild/cmake/release/armeabi-v7a/CMakeFiles/edit_cache.dir
-D:/android/workspace/java/ScreenCast/app/.externalNativeBuild/cmake/release/armeabi-v7a/CMakeFiles/rebuild_cache.dir
