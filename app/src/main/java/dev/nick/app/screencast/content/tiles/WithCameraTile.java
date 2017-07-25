@@ -29,6 +29,11 @@ public class WithCameraTile extends SwitchCameraTile {
             public void onStopCasting() {
                 mRecording = false;
             }
+
+            @Override
+            public void onElapsedTimeChange(String formatedTime) {
+
+            }
         });
         this.tileView = new SwitchTileView(context) {
 

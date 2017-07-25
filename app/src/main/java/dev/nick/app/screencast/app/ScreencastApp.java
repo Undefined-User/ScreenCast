@@ -4,16 +4,25 @@ import android.app.Application;
 import android.util.Log;
 
 import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
-import com.github.hiteshsondhi88.libffmpeg.FFmpegExecuteResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.FFmpegLoadBinaryResponseHandler;
-import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import dev.nick.app.screencast.BuildConfig;
+import dev.nick.app.screencast.cast.IScreencaster;
+import dev.nick.app.screencast.cast.ScreencastServiceProxy;
+import dev.nick.app.screencast.content.DialogScreenCastActivity;
 import dev.nick.app.screencast.tools.SharedExecutor;
 import dev.nick.logger.LoggerManager;
 
 public class ScreencastApp extends Application {
+
+    private AtomicBoolean mIsCasting = new AtomicBoolean(false);
+
+    public boolean isCasting() {
+        return mIsCasting.get();
+    }
 
     @Override
     public void onCreate() {
@@ -22,6 +31,25 @@ public class ScreencastApp extends Application {
         Factory.get().onApplicationCreate(this);
         LoggerManager.setDebugLevel(BuildConfig.DEBUG ? Log.VERBOSE : Log.ERROR);
         LoggerManager.setTagPrefix(ScreencastApp.class.getSimpleName());
+
+        ScreencastServiceProxy.watch(getApplicationContext(), new IScreencaster.ICastWatcher() {
+            @Override
+            public void onStartCasting() {
+                LoggerManager.getLogger(DialogScreenCastActivity.class).debug("onStartCasting");
+                mIsCasting.set(true);
+            }
+
+            @Override
+            public void onStopCasting() {
+                LoggerManager.getLogger(DialogScreenCastActivity.class).debug("onStopCasting");
+                mIsCasting.set(false);
+            }
+
+            @Override
+            public void onElapsedTimeChange(String formatedTime) {
+
+            }
+        });
 
         SharedExecutor.get().execute(new Runnable() {
             @Override
@@ -37,39 +65,6 @@ public class ScreencastApp extends Application {
                         public void onSuccess() {
                             Factory.get().setFFMpegAvailable();
                             LoggerManager.getLogger(ScreencastApp.class).debug("FFMpeg loading onSuccess");
-
-
-                            try {
-                                FFmpeg.getInstance(getApplicationContext())
-                                        .execute("-help".split(" "), new FFmpegExecuteResponseHandler() {
-                                            @Override
-                                            public void onSuccess(String message) {
-                                                LoggerManager.getLogger(ScreencastApp.class).debug(message);
-                                            }
-
-                                            @Override
-                                            public void onProgress(String message) {
-                                                LoggerManager.getLogger(ScreencastApp.class).debug(message);
-                                            }
-
-                                            @Override
-                                            public void onFailure(String message) {
-                                                LoggerManager.getLogger(ScreencastApp.class).debug(message);
-                                            }
-
-                                            @Override
-                                            public void onStart() {
-
-                                            }
-
-                                            @Override
-                                            public void onFinish() {
-
-                                            }
-                                        });
-                            } catch (FFmpegCommandAlreadyRunningException ignored) {
-
-                            }
                         }
 
                         @Override

@@ -117,7 +117,7 @@ public class ContainerView extends ViewGroup {
                 child.setDividerVisibility(false);
             }
 
-            // Push the item to the next row if it can't fit on this one
+            // Push the item to the next row if it can'data fit on this one
             if ((col + colSpan) > mNumColumns) {
                 x = getPaddingStart();
                 y += childHeight + mCellGapY;

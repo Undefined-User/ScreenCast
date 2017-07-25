@@ -41,10 +41,10 @@ import dev.nick.app.screencast.R;
 import dev.nick.app.screencast.provider.SettingsProvider;
 import dev.nick.logger.Logger;
 import dev.nick.logger.LoggerManager;
-import safesax.Element;
-import safesax.ElementListener;
-import safesax.Parsers;
-import safesax.RootElement;
+import dev.nick.library.safesax.Element;
+import dev.nick.library.safesax.ElementListener;
+import dev.nick.library.safesax.Parsers;
+import dev.nick.library.safesax.RootElement;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 abstract class EncoderDevice {
@@ -55,7 +55,7 @@ abstract class EncoderDevice {
     private int height;
     private MediaCodec venc;
     private VirtualDisplay virtualDisplay;
-    // Standard resolution tables, removed values that aren't multiples of 8
+    // Standard resolution tables, removed values that aren'data multiples of 8
     private int validResolutions[][] = ValidResolutions.$;
 
     private Logger logger;
@@ -104,7 +104,7 @@ abstract class EncoderDevice {
         try {
             venc.stop();
             venc.release();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         // see if this device is still in use
         if (this.venc != venc)
@@ -125,7 +125,7 @@ abstract class EncoderDevice {
             // signal any old crap to end
             try {
                 venc.signalEndOfInputStream();
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
             venc = null;
         }
@@ -243,9 +243,11 @@ abstract class EncoderDevice {
 
         MediaFormat video = MediaFormat.createVideoFormat("video/avc", width, height);
 
-        video.setInteger(MediaFormat.KEY_BIT_RATE, bitrate);
+        int frameRate = SettingsProvider.get().getFrameRate();
+        logger.debug("Frame rate:" + frameRate);
 
-        video.setInteger(MediaFormat.KEY_FRAME_RATE, 30);
+        video.setInteger(MediaFormat.KEY_BIT_RATE, bitrate);
+        video.setInteger(MediaFormat.KEY_FRAME_RATE, frameRate);
         video.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
         video.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 3);
 
@@ -254,7 +256,7 @@ abstract class EncoderDevice {
         try {
             venc = MediaCodec.createEncoderByType("video/avc");
         } catch (IOException e) {
-            logger.trace("Can't create AVC encoder!", e);
+            logger.trace("Can'data create AVC encoder!", e);
         }
         venc.configure(video, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
         Surface surface = venc.createInputSurface();

@@ -89,7 +89,7 @@ public class XmlUtils {
 
         String nm = charSeq.toString();
 
-        // XXX This code is copied from Integer.decode() so we don't
+        // XXX This code is copied from Integer.decode() so we don'data
         // have to instantiate an Integer!
 
         int value;

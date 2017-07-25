@@ -464,7 +464,7 @@ public class PieRenderer extends OverlayRenderer
             PieItem item = findItem(polar);
             boolean moved = hasMoved(evt);
             if ((item != null) && (mCurrentItem != item) && (!mOpening || moved)) {
-                // only select if we didn't just open or have moved past slop
+                // only select if we didn'data just open or have moved past slop
                 mOpening = false;
                 if (moved) {
                     // switch back to swipe mode

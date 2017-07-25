@@ -7,7 +7,6 @@ import android.widget.TextView;
 import java.util.List;
 
 import dev.nick.app.screencast.R;
-import dev.nick.app.screencast.app.Factory;
 import dev.nick.app.screencast.cast.CasterAudioSource;
 import dev.nick.app.screencast.provider.SettingsProvider;
 import dev.nick.logger.LoggerManager;
@@ -18,7 +17,7 @@ import dev.nick.tiles.tile.TileListener;
 
 public class Dashboards extends DashboardFragment implements TileListener {
 
-    private TextView mSummView;
+    private TextView mSummaryView;
 
     @Override
     protected void onCreateDashCategories(List<Category> categories) {
@@ -27,7 +26,7 @@ public class Dashboards extends DashboardFragment implements TileListener {
             @Override
             public void onSummaryViewAttached(TextView view) {
                 super.onSummaryViewAttached(view);
-                mSummView = view;
+                mSummaryView = view;
             }
 
             @Override
@@ -43,34 +42,51 @@ public class Dashboards extends DashboardFragment implements TileListener {
                 == CasterAudioSource.R_SUBMIX) ? R.string.audio_xopsed_desc : 0;
         audio.addTile(new WithAudioTile(getContext(), this));
         audio.addTile(new AudioSourceTile(getContext(), this));
+
         Category camera = new Category();
         camera.titleRes = R.string.category_camera;
         camera.addTile(new WithCameraTile(getContext(), this));
         camera.addTile(new PreviewSizeDropdownTile(getContext(), this));
         camera.addTile(new SwitchCameraTile(getContext(), this));
+
         Category video = new Category();
         video.titleRes = R.string.category_video;
         video.addTile(new ResolutionsTile(getContext(), this));
         video.addTile(new OrientationTile(getContext(), this));
+        video.addTile(new FrameRateTile(getContext()));
+
         Category access = new Category();
         access.titleRes = R.string.category_accessibility;
         access.addTile(new SoundEffectTile(getContext(), this));
         access.addTile(new ShakeTile(getContext(), this));
-        access.addTile(new FloatControlTile(getContext(), this));
         access.addTile(new ShowTouchTile(getContext(), this));
         access.addTile(new DelayTile(getContext(), this));
         access.addTile(new ShowCDTile(getContext(), this));
         access.addTile(new AutoHideTile(getContext(), this));
+        access.addTile(new StopWhenScreenOffTile(getContext(), this));
+        access.addTile(new StopOnVolumeTile(getContext(), this));
+
+        Category floatControl = new Category();
+        floatControl.titleRes = R.string.title_float_control_settings;
+        floatControl.addTile(new FloatControlTile(getContext(), this));
+        floatControl.addTile(new FloatControlThemeTile(getContext(), this));
+        floatControl.addTile(new FloatControlAlphaTile(getContext(), this));
+
+        Category storage = new Category();
+        storage.titleRes = R.string.category_storage;
+        storage.addTile(new StorageTile(getActivity(), this));
+
         Category others = new Category();
         others.titleRes = R.string.category_others;
-        if (Factory.get().integratedAD()) others.addTile(new WithADTile(getContext(), this));
-        others.addTile(new StorageTile(getActivity(), this));
+        others.addTile(new DonateTile(getActivity()));
         others.addTile(new LicenseTile(getContext(), this));
-        others.addTile(new AuthorInfoTile(getContext(), this));
+
         categories.add(audio);
         categories.add(video);
         categories.add(camera);
         categories.add(access);
+        categories.add(floatControl);
+        categories.add(storage);
         categories.add(others);
     }
 
@@ -78,9 +94,9 @@ public class Dashboards extends DashboardFragment implements TileListener {
     public void onTileClick(@NonNull QuickTile tile) {
         LoggerManager.getLogger(getClass()).debug("OnTileClick:" + tile);
         // Nothing.
-        if (!SettingsProvider.get().audioSourceNoRemind() && mSummView != null && tile instanceof AudioSourceTile) {
-            mSummView.setText(R.string.audio_xopsed_desc);
-            mSummView.setVisibility(View.VISIBLE);
+        if (!SettingsProvider.get().audioSourceNoRemind() && mSummaryView != null && tile instanceof AudioSourceTile) {
+            mSummaryView.setText(R.string.audio_xopsed_desc);
+            mSummaryView.setVisibility(View.VISIBLE);
         }
     }
 }

@@ -1,1 +1,1 @@
-include ':app', ':tiles', ':liscense', ':logger'
+include ':app', ':tiles', ':logger'

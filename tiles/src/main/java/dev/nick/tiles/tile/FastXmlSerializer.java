@@ -32,7 +32,7 @@ import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
 
 /**
- * This is a quick and dirty implementation of XmlSerializer that isn't horribly
+ * This is a quick and dirty implementation of XmlSerializer that isn'data horribly
  * painfully slow like the normal one.  It only does what is needed for the
  * specific XML files being written with it.
  */

@@ -113,7 +113,7 @@ public class CameraManager implements FocusOverlayManager.Listener {
      */
     private final FocusOverlayManager mFocusOverlayManager;
     /**
-     * The index of the selected camera or NO_CAMERA_SELECTED if a camera hasn't been selected yet
+     * The index of the selected camera or NO_CAMERA_SELECTED if a camera hasn'data been selected yet
      */
     private int mCameraIndex;
     /**
@@ -145,8 +145,8 @@ public class CameraManager implements FocusOverlayManager.Listener {
      */
     private boolean mIsHardwareAccelerationSupported;
     /**
-     * The task for opening the camera, so it doesn't block the UI thread
-     * Using AsyncTask rather than SafeAsyncTask because the tasks need to be serialized, but don't
+     * The task for opening the camera, so it doesn'data block the UI thread
+     * Using AsyncTask rather than SafeAsyncTask because the tasks need to be serialized, but don'data
      * need to be on the UI thread
      * TODO: If we have other AyncTasks (not SafeAsyncTasks) this may contend and we may
      * need to create a dedicated thread, or synchronize the threads in the thread pool
@@ -848,7 +848,7 @@ public class CameraManager implements FocusOverlayManager.Listener {
 
     /**
      * External components call into this to report if hardware acceleration is supported.  When
-     * hardware acceleration isn't supported, we need to report an error through the listener
+     * hardware acceleration isn'data supported, we need to report an error through the listener
      * interface
      *
      * @param isHardwareAccelerationSupported True if the preview is rendering in a hardware
@@ -857,7 +857,7 @@ public class CameraManager implements FocusOverlayManager.Listener {
     void reportHardwareAccelerationSupported(final boolean isHardwareAccelerationSupported) {
         Assert.isMainThread();
         if (mIsHardwareAccelerationSupported == isHardwareAccelerationSupported) {
-            // If the value hasn't changed nothing more to do
+            // If the value hasn'data changed nothing more to do
             return;
         }
 
@@ -877,7 +877,7 @@ public class CameraManager implements FocusOverlayManager.Listener {
                                                   final int maxWidth, final int maxHeight) {
         if (maxWidth <= 0 || maxHeight <= 0) {
             // MmsConfig initialization runs asynchronously on application startup, so there's a
-            // chance (albeit a very slight one) that we don't have it yet.
+            // chance (albeit a very slight one) that we don'data have it yet.
             Log.w(TAG, "Max image size not loaded in MmsConfig");
             return 1.0f;
         }
@@ -905,7 +905,7 @@ public class CameraManager implements FocusOverlayManager.Listener {
         int screenHeight;
         if (displayOrientation == Configuration.ORIENTATION_LANDSCAPE) {
             // Rotate the camera orientation 90 degrees to compensate for the rotated display
-            // metrics. Direction doesn't matter because we're just using it for width/height
+            // metrics. Direction doesn'data matter because we're just using it for width/height
             cameraOrientation += 90;
         }
 
@@ -998,7 +998,7 @@ public class CameraManager implements FocusOverlayManager.Listener {
             final Camera.Parameters parameters = mCamera.getParameters();
             parameters.setFocusMode(mFocusOverlayManager.getFocusMode());
             if (parameters.getMaxNumFocusAreas() > 0) {
-                // Don't set focus areas (even to null) if focus areas aren't supported, camera may
+                // Don'data set focus areas (even to null) if focus areas aren'data supported, camera may
                 // crash
                 parameters.setFocusAreas(mFocusOverlayManager.getFocusAreas());
             }

@@ -14,7 +14,7 @@
         android:targetPackage="com.github.jjobes.htmldialog.test" />
 
     <application>
-        <uses-library android:name="android.test.runner" />
+        <uses-dev.nick.library android:name="android.test.runner" />
     </application>
 
 </manifest>

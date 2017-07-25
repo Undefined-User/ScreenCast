@@ -51,7 +51,7 @@ class StorageTile extends QuickTile {
         };
     }
 
-    public static void pickSingleDir(Activity activity, int code) {
+    private static void pickSingleDir(Activity activity, int code) {
         // This always works
         Intent i = new Intent(activity, FilePickerActivity.class);
         // This works if you defined the intent filter

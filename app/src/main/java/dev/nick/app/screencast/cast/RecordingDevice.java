@@ -16,7 +16,6 @@
 
 package dev.nick.app.screencast.cast;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
@@ -70,7 +69,7 @@ class RecordingDevice extends EncoderDevice {
     }
 
     // thread to mux the encoded audio into the final mp4 file
-    class AudioMuxer implements Runnable {
+    private class AudioMuxer implements Runnable {
         AudioRecorder audio;
         MediaMuxer muxer;
         int track;
@@ -101,7 +100,6 @@ class RecordingDevice extends EncoderDevice {
             }
         }
 
-        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
         void encode() throws Exception {
             ByteBuffer[] outs = audio.codec.getOutputBuffers();
             boolean doneCoding = false;
@@ -132,18 +130,17 @@ class RecordingDevice extends EncoderDevice {
 
     // Start up an AudioRecord thread to record the mic, and feed
     // the data to an encoder.
-    class AudioRecorder implements Runnable {
+    private class AudioRecorder implements Runnable {
         Recorder recorder;
         AudioRecord record;
         MediaCodec codec;
         MediaFormat format;
 
-        @TargetApi(Build.VERSION_CODES.KITKAT)
-        public AudioRecorder(Recorder recorder) {
+        AudioRecorder(Recorder recorder) {
             try {
                 codec = MediaCodec.createEncoderByType("audio/mp4a-latm");
             } catch (IOException e) {
-                Log.wtf(LOGTAG, "Can't create encoder!", e);
+                Log.wtf(LOGTAG, "Can'data create encoder!", e);
             }
             format = new MediaFormat();
             format.setString(MediaFormat.KEY_MIME, "audio/mp4a-latm");
@@ -181,10 +178,12 @@ class RecordingDevice extends EncoderDevice {
             try {
                 record.stop();
             } catch (Exception e) {
+                Log.e(LOGTAG, "AudioRecorder error", e);
             }
             try {
                 record.release();
             } catch (Exception e) {
+                Log.e(LOGTAG, "AudioRecorder error", e);
             }
         }
 
@@ -206,10 +205,10 @@ class RecordingDevice extends EncoderDevice {
         }
     }
 
-    class Recorder extends EncoderRunnable {
+    private class Recorder extends EncoderRunnable {
         boolean doneCoding = false;
 
-        public Recorder(MediaCodec venc) {
+        Recorder(MediaCodec venc) {
             super(venc);
         }
 
@@ -249,7 +248,7 @@ class RecordingDevice extends EncoderDevice {
                     }
 
                     if (!muxerStarted) {
-                        throw new RuntimeException("muxer hasn't started");
+                        throw new RuntimeException("muxer hasn'data started");
                     }
 
                     ByteBuffer b = encouts[bufIndex];

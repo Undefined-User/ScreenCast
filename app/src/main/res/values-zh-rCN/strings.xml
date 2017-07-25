@@ -39,9 +39,10 @@
     <string name="audio_xopsed_desc"><b>请注意：</b>\n\t<b>· </b>只有安装Xposed而且激活了录像模块的设备才能录制<b>扬声器</b>的声音，如果您的设备不具备上述条件，请不要选择<b>扬声器</b>声源。\n\t<b>· </b>当您使用扬声器录制声音时，您的设备扬声器会无声（铃音除外），这是Android默认的行为决定的。</string>
     <string name="category_video">视频</string>
     <string name="category_others">其他</string>
+    <string name="category_storage">存储</string>
     <string name="category_accessibility">辅助</string>
     <string name="category_camera">相机</string>
-    <string name="warn_only_root">点击转到开发者设置</string>
+    <string name="warn_only_root">Root用户自动开启，非Root用户转到开发者设置</string>
     <string name="title_settings">设置</string>
     <string name="title_with_audio">录制声音</string>
     <string name="title_audio_source">声音来源</string>
@@ -50,11 +51,16 @@
     <string name="title_float_window">悬浮窗</string>
     <string name="title_with_camera">相机预览</string>
     <string name="title_high_res">分辨率</string>
+    <string name="title_donate">捐赠</string>
+    <string name="summary_donate">感谢每一分的支持:)</string>
+    <string name="title_frame_rate">帧率</string>
     <string name="title_orientation">方向</string>
     <string name="title_preview_size">预览窗大小</string>
     <string name="title_switch_camera">切换相机</string>
     <string name="title_show_touch">显示触摸</string>
     <string name="title_auto_hide">最小化应用</string>
+    <string name="title_stop_when_screen_off">灭屏停止</string>
+    <string name="title_stop_on_volume">音量按钮停止（实验）</string>
     <string name="title_start_delay">延迟</string>
     <string name="title_show_cd">显示倒计时</string>
     <string name="title_app_info">反馈</string>
@@ -90,4 +96,13 @@
     <string name="xposed_desc">抓取R_SUBMIX音频流</string>
     <string name="got_it">不再提醒</string>
     <string name="title_switch_layout">切换视图</string>
+
+    <string name="title_starting_cast">即将开始录制</string>
+
+    <string name="title_float_control_settings">悬浮窗</string>
+    <string name="float_alpha">透明度</string>
+    <string name="float_theme">样式</string>
+    <string name="theme_def">默认</string>
+    <string name="theme_def_dark">默认-黑</string>
+    <string name="theme_def_circle">默认-圆</string>
 </resources>

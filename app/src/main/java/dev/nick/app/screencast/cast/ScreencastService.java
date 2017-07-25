@@ -90,12 +90,16 @@ public class ScreencastService extends Service implements IScreencaster, Handler
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            mLogger.info("onReceive:" + intent.getAction());
             if (intent.getAction().equals(Intent.ACTION_USER_BACKGROUND) ||
                     intent.getAction().equals(ACTION_STOP_SCREENCAST) ||
                     intent.getAction().equals(Intent.ACTION_SHUTDOWN)) {
-                mLogger.info("onReceive:" + intent.getAction());
                 stop();
                 CameraPreviewServiceProxy.hide(context);
+            } else if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
+                if (SettingsProvider.get().stopWhenScreenOff()) {
+                    stop();
+                }
             }
         }
     };
@@ -177,6 +181,7 @@ public class ScreencastService extends Service implements IScreencaster, Handler
         filter.addAction(Intent.ACTION_USER_BACKGROUND);
         filter.addAction(Intent.ACTION_SHUTDOWN);
         filter.addAction(ACTION_STOP_SCREENCAST);
+        filter.addAction(Intent.ACTION_SCREEN_OFF);
         registerReceiver(mBroadcastReceiver, filter);
         super.onCreate();
     }
@@ -206,9 +211,11 @@ public class ScreencastService extends Service implements IScreencaster, Handler
 
     public void updateNotification(Context context) {
         long timeElapsed = SystemClock.elapsedRealtime() - startTime;
-        mBuilder.setContentText(getString(R.string.video_length,
-                DateUtils.formatElapsedTime(timeElapsed / 1000)));
+        String time = getString(R.string.video_length,
+                DateUtils.formatElapsedTime(timeElapsed / 1000));
+        mBuilder.setContentText(time);
         startForeground(1, mBuilder.build());
+        notifyTimeChange(DateUtils.formatElapsedTime(timeElapsed / 1000));
     }
 
     protected Point getNativeResolution() {
@@ -422,6 +429,22 @@ public class ScreencastService extends Service implements IScreencaster, Handler
     @Override
     public boolean isCasting() {
         return mIsCasting;
+    }
+
+
+    private void notifyTimeChange(final String time) {
+        synchronized (mWatchers) {
+            final List<ICastWatcher> tmp = new ArrayList<>(mWatchers.size());
+            tmp.addAll(mWatchers);
+            ThreadUtil.getMainThreadHandler().post(new Runnable() {
+                @Override
+                public void run() {
+                    for (ICastWatcher w : tmp) {
+                        w.onElapsedTimeChange(time);
+                    }
+                }
+            });
+        }
     }
 
     private void notifyCasting() {

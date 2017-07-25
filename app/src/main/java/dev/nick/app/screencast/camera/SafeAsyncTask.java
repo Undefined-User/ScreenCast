@@ -160,7 +160,7 @@ public abstract class SafeAsyncTask<Params, Progress, Result>
             final long executionTime = SystemClock.elapsedRealtime() - startTime;
             if (executionTime > mMaxExecutionTimeMillis) {
                 Log.w(TAG, String.format("%s took %dms", this, executionTime));
-                // Don't crash if debugger is attached or if we are asked to cancel on timeout.
+                // Don'data crash if debugger is attached or if we are asked to cancel on timeout.
                 if (!Debug.isDebuggerConnected() && !mCancelExecutionOnTimeout) {
                     Assert.fail(this + " took too long");
                 }

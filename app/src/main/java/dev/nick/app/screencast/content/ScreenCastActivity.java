@@ -32,6 +32,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -46,10 +47,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
 import com.github.hiteshsondhi88.libffmpeg.FFmpegExecuteResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
+import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
 import com.github.johnpersano.supertoasts.library.Style;
 import com.github.johnpersano.supertoasts.library.SuperToast;
 import com.github.johnpersano.supertoasts.library.utils.PaletteUtils;
@@ -80,11 +84,11 @@ public class ScreenCastActivity extends TransactionSafeActivity {
 
     private static final int PERMISSION_CODE = 1;
     private static final int PERMISSION_CODE_CREATE = 2;
-    protected boolean mReadyToRun;
     protected Logger mLogger;
     private MediaProjection mMediaProjection;
     private MediaProjectionManager mProjectionManager;
     private RecordingButton mFab;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView mRecyclerView;
     private Adapter mAdapter;
     private boolean mIsCasting;
@@ -99,12 +103,12 @@ public class ScreenCastActivity extends TransactionSafeActivity {
 
         setContentView(getContentViewId());
 
-        mReadyToRun = true;
+        initUI();
+    }
 
+    private void initService() {
         mProjectionManager =
                 (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
-
-        initUI();
 
         ScreencastServiceProxy.watch(getApplicationContext(), new IScreencaster.ICastWatcher() {
             @Override
@@ -115,7 +119,6 @@ public class ScreenCastActivity extends TransactionSafeActivity {
 
             @Override
             public void onStopCasting() {
-                if (!mReadyToRun || SettingsProvider.get().firstStart()) return;
                 refreshState(false);
                 ThreadUtil.getMainThreadHandler().postDelayed(new Runnable() {
                     @Override
@@ -124,12 +127,20 @@ public class ScreenCastActivity extends TransactionSafeActivity {
                     }
                 }, 1000);// Waiting for the Scanner.
             }
+
+            @Override
+            public void onElapsedTimeChange(String formatedTime) {
+
+            }
         });
     }
 
     protected void initUI() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe);
+        swipeRefreshLayout.setColorSchemeColors(getResources().getIntArray(R.array.polluted_waves));
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
@@ -145,7 +156,14 @@ public class ScreenCastActivity extends TransactionSafeActivity {
             }
         });
 
-        mFab = (RecordingButton) findViewById(R.id.fab);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                ScreenCastActivityPermissionsDispatcher.readVideosWithCheck(ScreenCastActivity.this);
+            }
+        });
+
+        mFab = (RecordingButton) findViewById(R.id.image);
 
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -164,16 +182,16 @@ public class ScreenCastActivity extends TransactionSafeActivity {
 
         if (mRemainingSeconds != 0) mFab.hide();
 
-        showVideoList();
-        if ((SettingsProvider.get().firstStart() || SettingsProvider.get().getAppVersionNum()
-                < SettingsProvider.APP_VERSION_INT)) {
-            showRetation();
+        setupAdapter();
+        if ((SettingsProvider.get().getAppVersionNum() < SettingsProvider.APP_VERSION_INT)) {
+            showPermissionDialogAndGo();
         } else {
             ScreenCastActivityPermissionsDispatcher.readVideosWithCheck(ScreenCastActivity.this);
+            initService();
         }
     }
 
-    protected void showCountdown(String content) {
+    protected void showCountdownIfNeeded(String content) {
         boolean showCD = SettingsProvider.get().showCD();
         if (showCD) {
             SuperToast.cancelAllSuperToasts();
@@ -189,36 +207,32 @@ public class ScreenCastActivity extends TransactionSafeActivity {
         return R.layout.navigator_content;
     }
 
-    public void showRetation() {
-        new AlertDialog.Builder(ScreenCastActivity.this)
+    public void showPermissionDialogAndGo() {
+        new MaterialStyledDialog.Builder(this)
                 .setTitle(R.string.title_perm_require)
-                .setMessage(R.string.summary_perm_require)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                .setDescription(R.string.summary_perm_require)
+                .setIcon(R.drawable.ic_folder_white_24dp)
+                .setPositiveText(android.R.string.ok)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         ScreenCastActivityPermissionsDispatcher.readVideosWithCheck(ScreenCastActivity.this);
+                        initService();
                     }
                 })
-                .setNegativeButton(R.string.perm_require_no_mind, new DialogInterface.OnClickListener() {
+                .setNegativeText(android.R.string.cancel)
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        SettingsProvider.get().setFirstStart(false);
-                        ScreenCastActivityPermissionsDispatcher.readVideosWithCheck(ScreenCastActivity.this);
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        finish();
                     }
-                })
-                .setCancelable(false)
-                .show();
-    }
+                }).setCancelable(false).build().show();
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (!mReadyToRun || SettingsProvider.get().firstStart()) return;
-        ScreenCastActivityPermissionsDispatcher.readVideosWithCheck(this);
     }
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     void readVideos() {
+        swipeRefreshLayout.setRefreshing(true);
         ThreadUtil.newThread(new Runnable() {
             @Override
             public void run() {
@@ -229,32 +243,11 @@ public class ScreenCastActivity extends TransactionSafeActivity {
                     public void run() {
                         mAdapter.update(videos);
                         updateHint();
+                        swipeRefreshLayout.setRefreshing(false);
                     }
                 });
             }
         }).run();
-    }
-
-    List<Video> getAdded(List<Video> nows) {
-        List<Video> added = new ArrayList<>();
-        List<Video> olds = new ArrayList<>(mAdapter.data);
-        for (Video v : nows) {
-            if (!olds.contains(v)) {
-                added.add(v);
-            }
-        }
-        return added;
-    }
-
-    List<Video> getRemoved(List<Video> nows) {
-        List<Video> rm = new ArrayList<>();
-        List<Video> olds = new ArrayList<>(mAdapter.data);
-        for (Video v : olds) {
-            if (!nows.contains(v)) {
-                rm.add(v);
-            }
-        }
-        return rm;
     }
 
     void updateHint() {
@@ -289,7 +282,7 @@ public class ScreenCastActivity extends TransactionSafeActivity {
             mFab.hide();
             long delay = SettingsProvider.get().startDelay();
             mRemainingSeconds = (int) (delay / 1000);
-            showCountdown(String.valueOf(mRemainingSeconds));
+            showCountdownIfNeeded(String.valueOf(mRemainingSeconds));
             mRemainingSeconds--;
             mLogger.debug(mRemainingSeconds);
             new CountDownTimer(delay, 1000) {
@@ -300,7 +293,7 @@ public class ScreenCastActivity extends TransactionSafeActivity {
                         @Override
                         public void run() {
                             mLogger.debug("Tick");
-                            showCountdown(String.valueOf(mRemainingSeconds));
+                            showCountdownIfNeeded(String.valueOf(mRemainingSeconds));
                             mRemainingSeconds--;
                         }
                     });
@@ -408,7 +401,7 @@ public class ScreenCastActivity extends TransactionSafeActivity {
         });
     }
 
-    protected void showVideoList() {
+    protected void setupAdapter() {
         mRecyclerView.setHasFixedSize(true);
         setupLayoutManager();
         mAdapter = new Adapter();
@@ -424,10 +417,6 @@ public class ScreenCastActivity extends TransactionSafeActivity {
         return new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
     }
 
-
-    protected void onBindViewHolder(final TwoLinesViewHolder holder, int position) {
-        // Nothing.
-    }
 
     class TwoLinesViewHolder extends RecyclerView.ViewHolder {
 
@@ -535,7 +524,6 @@ public class ScreenCastActivity extends TransactionSafeActivity {
                 }
             });
             Glide.with(getApplicationContext()).load(item.getPath()).into(holder.thumbnail);
-            ScreenCastActivity.this.onBindViewHolder(holder, position);
         }
 
         @Override
@@ -565,7 +553,7 @@ public class ScreenCastActivity extends TransactionSafeActivity {
                                             new MediaScannerConnection.OnScanCompletedListener() {
                                                 public void onScanCompleted(String path, Uri uri) {
                                                     LoggerManager.getLogger(getClass()).info("MediaScanner scanned recording " + path);
-                                                    readVideos();
+                                                    ScreenCastActivityPermissionsDispatcher.readVideosWithCheck(ScreenCastActivity.this);
                                                 }
                                             });
                                 }

@@ -3,6 +3,7 @@ package dev.nick.app.screencast.content;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -30,6 +31,11 @@ public class DrawerScreencastActivity extends ScreenCastActivity
 
 
     private boolean mGriding;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     protected void initUI() {
@@ -93,7 +99,6 @@ public class DrawerScreencastActivity extends ScreenCastActivity
         return new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         return true;
@@ -117,4 +122,8 @@ public class DrawerScreencastActivity extends ScreenCastActivity
         SettingsProvider.get().setStorageRootPath(dir.getPath());
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }

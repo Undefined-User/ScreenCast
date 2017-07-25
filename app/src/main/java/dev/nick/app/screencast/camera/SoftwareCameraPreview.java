@@ -31,7 +31,7 @@ import java.io.IOException;
  * HardwareCameraPreview is preferred if possible.
  * <p>
  * There is a significant amount of duplication between HardwareCameraPreview and
- * SoftwareCameraPreview which we can't easily share due to a lack of multiple inheritance, The
+ * SoftwareCameraPreview which we can'data easily share due to a lack of multiple inheritance, The
  * implementations of the shared methods are delegated to CameraPreview
  */
 public class SoftwareCameraPreview extends SurfaceView implements CameraPreview.CameraPreviewHost {

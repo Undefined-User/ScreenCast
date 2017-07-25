@@ -62,7 +62,7 @@ class MmsVideoRecorder extends MediaRecorder {
                 / (double) (audioBitRate + videoBitRate);
         if (initialDurationLimit < MIN_DURATION_LIMIT_SECONDS) {
             // Reduce the suggested bitrates.  These bitrates are only requests, if implementation
-            // can't actually hit these goals it will still record video at higher rate and stop when
+            // can'data actually hit these goals it will still record video at higher rate and stop when
             // it hits the size limit.
             final double bitRateAdjustmentFactor = initialDurationLimit / MIN_DURATION_LIMIT_SECONDS;
             audioBitRate *= bitRateAdjustmentFactor;

@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.util.Log;
+import android.widget.Toast;
 
+import dev.nick.app.screencast.app.Factory;
 import dev.nick.app.screencast.provider.SettingsProvider;
 import dev.nick.app.screencast.widget.FloatView;
-import dev.nick.logger.Logger;
 import dev.nick.logger.LoggerManager;
 import ezy.assist.compat.SettingsCompat;
 
@@ -35,15 +37,21 @@ public class FloatingControlService extends Service implements FloatingControlle
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        if (SettingsCompat.canDrawOverlays(this)) {
+        if (SettingsCompat.canDrawOverlays(Factory.get().getTopActivity())) {
             show();
         } else {
-            SettingsCompat.manageDrawOverlays(this);
+            try {
+                SettingsCompat.manageDrawOverlays(Factory.get().getTopActivity());
+            } catch (Throwable e) {
+                Toast.makeText(getApplicationContext(), Log.getStackTraceString(e), Toast.LENGTH_LONG).show();
+            }
+
             SettingsProvider.get().setShowFloatControl(false);
         }
 
         return START_STICKY;
     }
+
 
     @Override
     public void onDestroy() {

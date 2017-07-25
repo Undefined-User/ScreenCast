@@ -76,6 +76,11 @@ public class CameraPreviewService extends Service {
         public void onStopCasting() {
             hidePreview();
         }
+
+        @Override
+        public void onElapsedTimeChange(String formatedTime) {
+
+        }
     };
 
     @Override

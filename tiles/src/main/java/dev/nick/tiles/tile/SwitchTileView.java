@@ -54,7 +54,7 @@ public class SwitchTileView extends TileView implements Checkable {
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
         if (state == null || !state.getClass().equals(SavedState.class)) {
-            // Didn't save state for us in onSaveInstanceState
+            // Didn'data save state for us in onSaveInstanceState
             super.onRestoreInstanceState(state);
             return;
         }

@@ -66,11 +66,11 @@ public class EditTextTileView extends TileView {
     }
 
     protected CharSequence getPositiveButton() {
-        return "SAVE";
+        return getContext().getString(android.R.string.ok);
     }
 
     protected CharSequence getNegativeButton() {
-        return "DISCARD";
+        return getContext().getString(android.R.string.cancel);
     }
 
     protected void onPositiveButtonClick() {

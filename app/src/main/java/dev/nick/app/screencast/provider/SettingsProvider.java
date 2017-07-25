@@ -122,6 +122,26 @@ public abstract class SettingsProvider extends Observable {
 
     public abstract void setShowFloatControl(boolean show);
 
+    public abstract FloatControlTheme floatControlTheme();
+
+    public abstract void setFloatControlTheme(FloatControlTheme theme);
+
+    public abstract float floatControlAlpha();
+
+    public abstract void setFloatControlAlpha(float alpha);
+
+    public abstract int getFrameRate();
+
+    public abstract void setFrameRate(int rate);
+
+    public abstract boolean stopWhenScreenOff();
+
+    public abstract void setStopWhenScreenOff(boolean stopWhenScreenOff);
+
+    public abstract boolean stopOnVolume();
+
+    public abstract void setStopOnVolume(boolean stopWhenScreenOff);
+
     private static class Impl extends SettingsProvider {
         // Keys in Settings.
         private static final String KEY_FIRST_START = "settings.first.start";
@@ -146,6 +166,11 @@ public abstract class SettingsProvider extends Observable {
         private static final String SHOW_TOUCHES = "show_touches";
         private static final String SHOW_FLOAT_CONTROL = "show_float_ctl";
         private static final String SHOW_ROOT_PATH = "root_path";
+        private static final String KEY_FRAME_RATE = "frame_rate";
+        private static final String KEY_FC_ALPHA = "fc_alpha";
+        private static final String KEY_FC_THEME = "fc_theme";
+        private static final String KEY_STOP_WHEN_SCREEN_OFF = "key_stop_when_screen_off";
+        private static final String KEY_STOP_ON_VOLUME = "key_stop_on_volume";
 
         @Override
         public String storageRootPath() {
@@ -281,23 +306,6 @@ public abstract class SettingsProvider extends Observable {
         @Override
         @TargetApi(Build.VERSION_CODES.M)
         public boolean setShowTouch(boolean show) {
-            try {
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-//                    Settings.System.putInt(Factory.get().getApplicationContext().getContentResolver(), SHOW_TOUCHES, show ? 1 : 0);
-                    return true;
-                }
-//                if (Settings.System.canWrite(Factory.get().getApplicationContext())) {
-//                    Settings.System.putInt(Factory.get().getApplicationContext().getContentResolver(), SHOW_TOUCHES, show ? 1 : 0);
-//                    return true;
-//                } else {
-//                    Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_WRITE_SETTINGS);
-//                    intent.setData(Uri.parse("package:" + Factory.get().getApplicationContext().getPackageName()));
-//                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                    Factory.get().getApplicationContext().startActivity(intent);
-//                    return false;
-//                }
-            } catch (SecurityException | IllegalArgumentException ignored) {
-            }
             return false;
         }
 
@@ -452,6 +460,68 @@ public abstract class SettingsProvider extends Observable {
                     .edit().putBoolean(SHOW_FLOAT_CONTROL, show).apply();
             setChanged();
             notifyObservers();
+        }
+
+        @Override
+        public FloatControlTheme floatControlTheme() {
+            return FloatControlTheme.valueOf(PreferenceManager.getDefaultSharedPreferences(Factory.get().getApplicationContext())
+                    .getString(KEY_FC_THEME, FloatControlTheme.Default.name()));
+        }
+
+        @Override
+        public void setFloatControlTheme(FloatControlTheme theme) {
+            PreferenceManager.getDefaultSharedPreferences(Factory.get().getApplicationContext())
+                    .edit().putString(KEY_FC_THEME, theme.name()).apply();
+        }
+
+        @Override
+        public float floatControlAlpha() {
+            return (PreferenceManager.getDefaultSharedPreferences(Factory.get().getApplicationContext())
+                    .getFloat(KEY_FC_ALPHA, 0.5f));
+        }
+
+        @Override
+        public void setFloatControlAlpha(float alpha) {
+            PreferenceManager.getDefaultSharedPreferences(Factory.get().getApplicationContext())
+                    .edit().putFloat(KEY_FC_ALPHA, alpha).apply();
+            setChanged();
+            notifyObservers("float_alpha");
+        }
+
+        @Override
+        public int getFrameRate() {
+            return PreferenceManager.getDefaultSharedPreferences(Factory.get().getApplicationContext())
+                    .getInt(KEY_FRAME_RATE, 30);
+        }
+
+        @Override
+        public void setFrameRate(int rate) {
+            PreferenceManager.getDefaultSharedPreferences(Factory.get().getApplicationContext())
+                    .edit().putInt(KEY_FRAME_RATE, rate).apply();
+        }
+
+        @Override
+        public boolean stopWhenScreenOff() {
+            return PreferenceManager.getDefaultSharedPreferences(Factory.get().getApplicationContext())
+                    .getBoolean(KEY_STOP_WHEN_SCREEN_OFF, false);
+        }
+
+        @Override
+        public void setStopWhenScreenOff(boolean stopWhenScreenOff) {
+            PreferenceManager.getDefaultSharedPreferences(Factory.get().getApplicationContext())
+                    .edit().putBoolean(KEY_STOP_WHEN_SCREEN_OFF, stopWhenScreenOff).apply();
+        }
+
+        @Override
+        public boolean stopOnVolume() {
+            return PreferenceManager.getDefaultSharedPreferences(Factory.get().getApplicationContext())
+                    .getBoolean(KEY_STOP_ON_VOLUME, true);
+        }
+
+        @Override
+        public void setStopOnVolume(boolean stopOnVolume) {
+            PreferenceManager.getDefaultSharedPreferences(Factory.get().getApplicationContext())
+                    .edit().putBoolean(KEY_STOP_ON_VOLUME, stopOnVolume).apply();
         }
     }
 }

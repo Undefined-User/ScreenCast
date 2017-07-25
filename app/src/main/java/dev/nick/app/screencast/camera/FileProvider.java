@@ -129,20 +129,20 @@ public abstract class FileProvider extends ContentProvider {
     @Override
     public Cursor query(final Uri uri, final String[] projection, final String selection,
                         final String[] selectionArgs, final String sortOrder) {
-        // Don't support queries.
+        // Don'data support queries.
         return null;
     }
 
     @Override
     public Uri insert(final Uri uri, final ContentValues values) {
-        // Don't support inserts.
+        // Don'data support inserts.
         return null;
     }
 
     @Override
     public int update(final Uri uri, final ContentValues values, final String selection,
                       final String[] selectionArgs) {
-        // Don't support updates.
+        // Don'data support updates.
         return 0;
     }
 

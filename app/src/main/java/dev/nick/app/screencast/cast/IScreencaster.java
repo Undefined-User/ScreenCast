@@ -19,5 +19,7 @@ public interface IScreencaster {
         void onStartCasting();
 
         void onStopCasting();
+
+        void onElapsedTimeChange(String formatedTime);
     }
 }

@@ -22,7 +22,7 @@ import android.webkit.MimeTypeMap;
 public final class ContentType {
     public static String THREE_GPP_EXTENSION = "3gp";
     public static String VIDEO_MP4_EXTENSION = "mp4";
-    // Default extension used when we don't know one.
+    // Default extension used when we don'data know one.
     public static String DEFAULT_EXTENSION = "dat";
 
     public static final int TYPE_IMAGE = 0;
@@ -153,7 +153,7 @@ public final class ContentType {
      * Given a filename, look at the extension and try and determine the mime type.
      *
      * @param fileName           a filename to determine the type from, such as img1231.jpg
-     * @param contentTypeDefault type to use when the content type can't be determined from the file
+     * @param contentTypeDefault type to use when the content type can'data be determined from the file
      *                           extension. It can be null or a type such as ContentType.IMAGE_UNSPECIFIED
      * @return Content type of the extension.
      */

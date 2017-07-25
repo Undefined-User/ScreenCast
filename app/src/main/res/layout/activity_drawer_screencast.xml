@@ -41,6 +41,13 @@
                 app:cardUseCompatPadding="false"
                 app:contentPadding="0dp">
 
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/bg_default_profile_art" />
+
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">

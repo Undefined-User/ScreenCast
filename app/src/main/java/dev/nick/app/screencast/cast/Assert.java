@@ -45,7 +45,7 @@ public final class Assert {
      * Halt execution if this is not an eng build.
      * <p>Intended for use in code paths that should be run only for tests and never on
      * a real build.
-     * <p>Note that this will crash on a user build even though asserts don't normally
+     * <p>Note that this will crash on a user build even though asserts don'data normally
      * crash on a user build.
      */
     public static void isEngBuild() {
@@ -53,7 +53,7 @@ public final class Assert {
     }
 
     /**
-     * Halt execution if this isn't the case.
+     * Halt execution if this isn'data the case.
      */
     public static void isTrue(final boolean condition) {
         if (!condition) {
@@ -62,7 +62,7 @@ public final class Assert {
     }
 
     /**
-     * Halt execution if this isn't the case.
+     * Halt execution if this isn'data the case.
      */
     public static void isFalse(final boolean condition) {
         if (condition) {
@@ -71,7 +71,7 @@ public final class Assert {
     }
 
     /**
-     * Halt execution even in release builds if this isn't the case.
+     * Halt execution even in release builds if this isn'data the case.
      */
     public static void isTrueReleaseCheck(final boolean condition) {
         if (!condition) {
