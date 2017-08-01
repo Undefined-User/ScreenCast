@@ -20,4 +20,6 @@
 
     <integer name="popup_width">235</integer>
     <integer name="popup_height">172</integer>
+
+    <string name="pay_list_url">https://raw.githubusercontent.com/Tornaco/Tor-Data/master/pay_list_screec_rec_plus</string>
 </resources>

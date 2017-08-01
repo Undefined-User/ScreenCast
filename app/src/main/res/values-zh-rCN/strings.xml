@@ -105,4 +105,7 @@
     <string name="theme_def">默认</string>
     <string name="theme_def_dark">默认-黑</string>
     <string name="theme_def_circle">默认-圆</string>
+    <string name="title_pay_list">感谢名单</string>
+    <string name="title_get_pro">Pro版本</string>
+    <string name="summary_get_pro">Pro版本已经发布，支持内录（需要Root），点击查看</string>
 </resources>

@@ -100,15 +100,4 @@ public abstract class Factory implements Application.ActivityLifecycleCallbacks 
 
         }
     }
-
-    /**
-     * A native method that is implemented by the 'native-lib' native dev.nick.library,
-     * which is packaged with this application.
-     */
-    public native String stringFromJNI();
-
-    // Used to load the 'native-lib' dev.nick.library on application startup.
-    static {
-        System.loadLibrary("native-lib");
-    }
 }

@@ -74,11 +74,11 @@ public class ScreencastService extends Service implements IScreencaster, Handler
     private static final String TAG = "TestSensorActivity";
     private static final int SENSOR_SHAKE = 10;
     private final List<ICastWatcher> mWatchers = new ArrayList<>();
-    RecordingDevice mRecorder;
+    private RecordingDevice mRecorder;
     boolean mIsCasting;
-    ServiceBinder mBinder;
+    private ServiceBinder mBinder;
 
-    Handler sensorEventHandler;
+    private Handler sensorEventHandler;
 
     private MediaProjection mProjection;
     private long startTime;

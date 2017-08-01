@@ -9,8 +9,8 @@ android {
         applicationId "dev.nick.app.screencast"
         minSdkVersion 21
         targetSdkVersion 25
-        versionCode 137
-        versionName "13.7"
+        versionCode 138
+        versionName "13.8"
     }
 
     buildTypes {
@@ -54,4 +54,9 @@ dependencies {
 
     apt "org.projectlombok:lombok:1.16.16"
     provided 'org.projectlombok:lombok:1.16.16'
+
+    compile 'com.google.guava:guava:20.0'
+    compile 'com.google.code.gson:gson:2.7'
+
+    compile 'com.koushikdutta.async:androidasync:2.1.9'
 }

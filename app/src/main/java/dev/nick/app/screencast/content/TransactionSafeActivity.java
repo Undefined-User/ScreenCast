@@ -4,12 +4,31 @@ import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+
+import dev.nick.app.screencast.R;
 
 public class TransactionSafeActivity extends AppCompatActivity {
 
     protected Fragment mShowingFragment;
+
+
+    protected void setupToolbar() {
+        setupToolbar(R.id.toolbar);
+    }
+
+    protected void setupToolbar(int resId) {
+        Toolbar toolbar = (Toolbar) findViewById(resId);
+        setSupportActionBar(toolbar);
+    }
+
+    protected void showHomeAsUp() {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
+    }
 
     /**
      * Show fragment page by replace the given containerId, if you have data to set
