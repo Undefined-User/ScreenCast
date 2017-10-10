@@ -106,7 +106,13 @@ public class ScreenCastActivity extends TransactionSafeActivity {
         initUI();
     }
 
-    private void initService() {
+    @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.GET_TASKS,
+            Manifest.permission.ACCESS_NETWORK_STATE,
+            Manifest.permission.ACCESS_WIFI_STATE})
+    void initService() {
         mProjectionManager =
                 (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
 
@@ -187,7 +193,7 @@ public class ScreenCastActivity extends TransactionSafeActivity {
             showPermissionDialogAndGo();
         } else {
             ScreenCastActivityPermissionsDispatcher.readVideosWithCheck(ScreenCastActivity.this);
-            initService();
+            ScreenCastActivityPermissionsDispatcher.initServiceWithCheck(ScreenCastActivity.this);
         }
     }
 
@@ -209,15 +215,14 @@ public class ScreenCastActivity extends TransactionSafeActivity {
 
     public void showPermissionDialogAndGo() {
         new MaterialStyledDialog.Builder(this)
-                .setTitle(R.string.title_perm_require)
+                .setIcon(R.drawable.ic_notifications_active_black_24dp)
                 .setDescription(R.string.summary_perm_require)
-                .setIcon(R.drawable.ic_folder_white_24dp)
                 .setPositiveText(android.R.string.ok)
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         ScreenCastActivityPermissionsDispatcher.readVideosWithCheck(ScreenCastActivity.this);
-                        initService();
+                        ScreenCastActivityPermissionsDispatcher.initServiceWithCheck(ScreenCastActivity.this);
                     }
                 })
                 .setNegativeText(android.R.string.cancel)

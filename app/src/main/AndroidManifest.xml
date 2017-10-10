@@ -21,10 +21,18 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="com.huawei.addviewpermission" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="com.huawei.screenrecorder.permission.SCREENRECORDER_SERVICE_PERMISSION" />
 
     <uses-permission android:name="dev.nick.app.permission.BIND_REC_BRIDGE_SERVICE" />
 
     <uses-sdk tools:overrideLibrary="com.github.johnpersano.supertoasts.library" />
+
+    <!--For AD START-->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <!--For AD END-->
 
     <application
         android:name=".app.ScreencastApp"
@@ -42,13 +50,6 @@
         <meta-data
             android:name="xposedminversion"
             android:value="53" />
-
-        <meta-data
-            android:name="BDAPPID"
-            android:value="8806685" />
-        <meta-data
-            android:name="BDAPPKEY"
-            android:value="4w9zhqeiYE4wWEAnPMpknZOee1nqNiRW" />
 
         <service
             android:name=".cast.ScreencastService"
@@ -115,6 +116,15 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
+        <!--For AD START-->
+        <activity
+            android:name="com.xiaomi.ad.AdActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:exported="false"
+            android:screenOrientation="behind"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
+        <!--For AD END-->
     </application>
 
 </manifest>

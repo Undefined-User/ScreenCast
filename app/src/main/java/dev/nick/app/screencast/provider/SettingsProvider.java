@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.Observable;
@@ -98,7 +99,7 @@ public abstract class SettingsProvider extends Observable {
 
     public abstract boolean clickAD();
 
-    public abstract void setClickAD(boolean click);
+    public abstract void setClickAD();
 
     public abstract boolean firstStart();
 
@@ -158,8 +159,8 @@ public abstract class SettingsProvider extends Observable {
         private static final String KEY_HIDE_AUTO = "settings.hide.app.auto";
         private static final String KEY_START_DELAY = "settings.start.delay";
         private static final String KEY_SHOW_COUNTDOWN = "settings.show.countdown";
-        private static final String KEY_SHOW_AD = "settings.show.ad";
-        private static final String KEY_CLICK_AD = "settings.click.ad";
+        private static final String KEY_SHOW_AD = "settings.show.ad.new";
+        private static final String KEY_CLICK_AD = "settings.click.ad.new";
         private static final String KEY_SOUND_EFFECT = "settings.sound.effect";
         private static final String KEY_SHAKE_ACTION = "settings.shake.action";
         private static final String KEY_APP_VERSION = "settings.app.code";
@@ -381,14 +382,15 @@ public abstract class SettingsProvider extends Observable {
 
         @Override
         public boolean clickAD() {
-            return PreferenceManager.getDefaultSharedPreferences(Factory.get().getApplicationContext())
-                    .getBoolean(KEY_CLICK_AD, false);
+            return System.currentTimeMillis()
+                    - PreferenceManager.getDefaultSharedPreferences(Factory.get().getApplicationContext())
+                    .getLong(KEY_CLICK_AD, 0L) <= 60 * 60 * 1000 * 24;
         }
 
         @Override
-        public void setClickAD(boolean click) {
+        public void setClickAD() {
             PreferenceManager.getDefaultSharedPreferences(Factory.get().getApplicationContext())
-                    .edit().putBoolean(KEY_CLICK_AD, click).apply();
+                    .edit().putLong(KEY_CLICK_AD, System.currentTimeMillis()).apply();
         }
 
         @Override

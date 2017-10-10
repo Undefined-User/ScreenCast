@@ -27,7 +27,9 @@ import android.media.MediaFormat;
 import android.media.projection.MediaProjection;
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.Surface;
+import android.view.WindowManager;
 
 import org.xml.sax.Attributes;
 
@@ -77,8 +79,13 @@ abstract class EncoderDevice {
         Surface surface = createDisplaySurface();
         if (surface == null)
             return null;
+        DisplayMetrics metric = new DisplayMetrics();
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        wm.getDefaultDisplay().getMetrics(metric);
+        int dpi = metric.densityDpi;
+        LoggerManager.getLogger(getClass()).info("DPI=" + dpi);
         return projection.createVirtualDisplay(name,
-                width, height, 1,
+                width, height, dpi,
                 DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
                 surface, null /*Callbacks*/, null /*Handler*/);
     }

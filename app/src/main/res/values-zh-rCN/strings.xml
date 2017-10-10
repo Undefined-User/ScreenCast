@@ -68,7 +68,7 @@
     <string name="title_app_license">许可</string>
     <string name="title_with_ad">广告</string>
     <string name="title_perm_require">需要权限</string>
-    <string name="summary_perm_require">录制屏幕内容需要权限，接下来的权限申请页面请勾选允许，否则程序无法正常工作</string>
+    <string name="summary_perm_require">录制屏幕内容需要权限，接下来的权限申请页面请勾选允许，否则程序无法正常工作。\n另外很抱歉的说，我们现在集成了MI-AD来维持及其微弱的回报，希望你允许获取读取设备IMEI（电话）的权限，敬请理解！</string>
     <string name="perm_require_no_mind">不再提醒</string>
     <string name="summary_audio">同时录制麦克风的声音</string>
     <string name="summary_start_delay">等待5s再开始录制</string>
@@ -108,4 +108,5 @@
     <string name="title_pay_list">感谢名单</string>
     <string name="title_get_pro">Pro版本</string>
     <string name="summary_get_pro">Pro版本已经发布，支持内录（需要Root），点击查看</string>
+    <string name="title_ad_area">广告</string>
 </resources>

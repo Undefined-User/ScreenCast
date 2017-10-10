@@ -1,22 +1,34 @@
 package dev.nick.app.screencast.app;
 
 import android.app.Application;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
 import com.github.hiteshsondhi88.libffmpeg.FFmpegLoadBinaryResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
+import com.xiaomi.ad.AdSdk;
+import com.xiaomi.ad.internal.common.LogLevel;
 
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import dev.nick.app.screencast.BuildConfig;
 import dev.nick.app.screencast.cast.IScreencaster;
 import dev.nick.app.screencast.cast.ScreencastServiceProxy;
 import dev.nick.app.screencast.content.DialogScreenCastActivity;
+import dev.nick.app.screencast.tools.Collections;
+import dev.nick.app.screencast.tools.Consumer;
 import dev.nick.app.screencast.tools.SharedExecutor;
 import dev.nick.logger.LoggerManager;
 
 public class ScreencastApp extends Application {
+
+    public static final String AD_APP_ID = "2882303761517617098";
+    public static final String AD_FEED_SMALL = "44590c6cde68340ae9e6842192a03d55";
+    public static final String AD_BANNER = "20676c78b42d76cd9ee03f97818e7342";
+    public static final int AD_FEED_TYPE_SMALL_PIC = 1;
+
 
     private AtomicBoolean mIsCasting = new AtomicBoolean(false);
 
@@ -31,6 +43,23 @@ public class ScreencastApp extends Application {
         Factory.get().onApplicationCreate(this);
         LoggerManager.setDebugLevel(BuildConfig.DEBUG ? Log.VERBOSE : Log.ERROR);
         LoggerManager.setTagPrefix(ScreencastApp.class.getSimpleName());
+
+        // For AD start.
+        AdSdk.setDebugOn();
+        AdSdk.setLogLevel(LogLevel.B);
+        AdSdk.initialize(this, AD_APP_ID);
+        try {
+            LoggerManager.getLogger(ScreencastApp.class).info("checking assets");
+            Collections.consumeRemaining(getAssets().list("test"), new Consumer<String>() {
+                @Override
+                public void accept(@NonNull String s) {
+                    LoggerManager.getLogger(ScreencastApp.class).info("passets:" + s);
+                }
+            });
+        } catch (IOException e) {
+            LoggerManager.getLogger(ScreencastApp.class).error("passets err" + e.getLocalizedMessage());
+        }
+        // For AD end.
 
         ScreencastServiceProxy.watch(getApplicationContext(), new IScreencaster.ICastWatcher() {
             @Override

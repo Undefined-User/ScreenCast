@@ -13,6 +13,10 @@ public abstract class QuickTile extends Tile {
         mListener = listener;
     }
 
+    public QuickTile(Context mContext) {
+        this.mContext = mContext;
+    }
+
     public Context getContext() {
         return mContext;
     }

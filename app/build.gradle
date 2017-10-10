@@ -9,13 +9,13 @@ android {
         applicationId "dev.nick.app.screencast"
         minSdkVersion 21
         targetSdkVersion 25
-        versionCode 138
-        versionName "13.8"
+        versionCode 141
+        versionName "14.1"
     }
 
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -42,21 +42,16 @@ dependencies {
     compile project(':logger')
     provided 'de.robv.android.xposed:api:82'
     provided 'de.robv.android.xposed:api:82:sources'
-
     compile 'com.github.Tornaco:FFMpeg-Android-Java:1.0-BETA'
     // https://github.com/czy1121/settingscompat
     compile 'com.github.czy1121:settingscompat:1.1.4'
-
     compile 'com.nononsenseapps:filepicker:4.1.0'
     compile 'com.chrisplus.rootmanager:library:2.0.5@aar'
-
     compile 'com.github.javiersantos:MaterialStyledDialogs:2.1'
-
     apt "org.projectlombok:lombok:1.16.16"
     provided 'org.projectlombok:lombok:1.16.16'
-
     compile 'com.google.guava:guava:20.0'
     compile 'com.google.code.gson:gson:2.7'
-
     compile 'com.koushikdutta.async:androidasync:2.1.9'
+    compile files('libs/AdSdk.jar')
 }
