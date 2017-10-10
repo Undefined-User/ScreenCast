@@ -6,6 +6,15 @@
         <item>@string/preview_size_l</item>
     </string-array>
 
+    <integer-array name="start_delay">
+        <item>3000</item>
+        <item>6000</item>
+        <item>10000</item>
+        <item>12000</item>
+        <item>15000</item>
+        <item>0</item>
+    </integer-array>
+
     <string-array name="audio_source">
         <item>@string/audio_source_mic</item>
         <item>@string/audio_source_submix</item>

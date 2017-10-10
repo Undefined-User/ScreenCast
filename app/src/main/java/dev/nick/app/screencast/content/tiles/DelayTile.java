@@ -10,9 +10,9 @@ import dev.nick.tiles.tile.QuickTile;
 import dev.nick.tiles.tile.SwitchTileView;
 import dev.nick.tiles.tile.TileListener;
 
-public class DelayTile extends QuickTile {
+class DelayTile extends QuickTile {
 
-    public DelayTile(@NonNull Context context, TileListener listener) {
+    DelayTile(@NonNull Context context, TileListener listener) {
         super(context, listener);
         this.iconRes = R.drawable.ic_access_time_black_24dp;
         this.tileView = new SwitchTileView(context) {

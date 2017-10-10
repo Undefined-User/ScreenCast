@@ -60,7 +60,7 @@ public class Dashboards extends DashboardFragment implements TileListener {
         access.addTile(new SoundEffectTile(getContext(), this));
         access.addTile(new ShakeTile(getContext(), this));
         access.addTile(new ShowTouchTile(getContext(), this));
-        access.addTile(new DelayTile(getContext(), this));
+        access.addTile(new DelayTile2(getContext(), this));
         access.addTile(new ShowCDTile(getContext(), this));
         access.addTile(new AutoHideTile(getContext(), this));
         access.addTile(new StopWhenScreenOffTile(getContext(), this));
