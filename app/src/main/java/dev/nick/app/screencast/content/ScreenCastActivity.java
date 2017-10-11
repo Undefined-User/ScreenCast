@@ -116,6 +116,8 @@ public class ScreenCastActivity extends TransactionSafeActivity {
         mProjectionManager =
                 (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
 
+        LoggerManager.getLogger(ScreenCastActivity.class).debug("initService::mProjectionManager:" + mProjectionManager);
+
         ScreencastServiceProxy.watch(getApplicationContext(), new IScreencaster.ICastWatcher() {
             @Override
             public void onStartCasting() {
@@ -191,6 +193,7 @@ public class ScreenCastActivity extends TransactionSafeActivity {
         setupAdapter();
         if ((SettingsProvider.get().getAppVersionNum() < SettingsProvider.APP_VERSION_INT)) {
             showPermissionDialogAndGo();
+            ScreenCastActivityPermissionsDispatcher.initServiceWithCheck(ScreenCastActivity.this);
         } else {
             ScreenCastActivityPermissionsDispatcher.readVideosWithCheck(ScreenCastActivity.this);
             ScreenCastActivityPermissionsDispatcher.initServiceWithCheck(ScreenCastActivity.this);

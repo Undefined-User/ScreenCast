@@ -18,6 +18,7 @@ package dev.nick.app.screencast.cast;
 
 import android.annotation.TargetApi;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -68,6 +69,8 @@ import dev.nick.logger.LoggerManager;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class ScreencastService extends Service implements IScreencaster, Handler.Callback {
+
+    private static final String NOTIFICATION_CHANNEL_ID = "dev.tornaco.notification.channel.id.ScreencastService";
 
     public static final String SCREENCASTER_NAME = "hidden:screen-recording";
     private static final String ACTION_STOP_SCREENCAST = "stop.recording";
@@ -134,6 +137,18 @@ public class ScreencastService extends Service implements IScreencaster, Handler
         return mBinder;
     }
 
+    private void createNotificationChannelForO() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            NotificationChannel notificationChannel;
+            notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID,
+                    "SCREENCASTTOR",
+                    NotificationManager.IMPORTANCE_LOW);
+            notificationChannel.enableLights(false);
+            notificationChannel.enableVibration(false);
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
+    }
 
     void cleanup() {
         String recorderPath = null;
@@ -159,6 +174,8 @@ public class ScreencastService extends Service implements IScreencaster, Handler
     public void onCreate() {
         mLogger = LoggerManager.getLogger(getClass());
 
+        createNotificationChannelForO();
+
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 
@@ -174,8 +191,8 @@ public class ScreencastService extends Service implements IScreencaster, Handler
                         .build())
                 .build();
 
-        mStopSound = mSoundPool.load(this, R.raw.video_stop, 1);
-        mStartSound = mSoundPool.load(this, R.raw.video_record, 1);
+        mStopSound = mSoundPool.load(this, R.raw.weico_newmessage, 1);
+        mStartSound = mSoundPool.load(this, R.raw.weico_newmessage, 1);
         stopCasting();
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_USER_BACKGROUND);
@@ -183,6 +200,7 @@ public class ScreencastService extends Service implements IScreencaster, Handler
         filter.addAction(ACTION_STOP_SCREENCAST);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         registerReceiver(mBroadcastReceiver, filter);
+
         super.onCreate();
     }
 
@@ -298,13 +316,16 @@ public class ScreencastService extends Service implements IScreencaster, Handler
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private Notification.Builder createNotificationBuilder() {
         Notification.Builder builder = new Notification.Builder(this)
-                .setOngoing(true)
                 .setSmallIcon(R.drawable.ic_stat_device_access_video)
                 .setContentTitle(getString(R.string.recording));
         Intent stopRecording = new Intent(ACTION_STOP_SCREENCAST);
         stopRecording.setClass(this, ScreencastService.class);
         builder.addAction(R.drawable.ic_stop, getString(R.string.stop),
                 PendingIntent.getService(this, 0, stopRecording, PendingIntent.FLAG_UPDATE_CURRENT));
+        // Build channel for O.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            builder.setChannelId(NOTIFICATION_CHANNEL_ID);
+        }
         return builder;
     }
 
@@ -314,6 +335,7 @@ public class ScreencastService extends Service implements IScreencaster, Handler
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         // share the screencast file
         mBuilder = createShareNotificationBuilder(recordingFilePath);
+
         notificationManager.notify(0, mBuilder.build());
     }
 
@@ -330,7 +352,7 @@ public class ScreencastService extends Service implements IScreencaster, Handler
         PendingIntent contentIntent =
                 PendingIntent.getActivity(this, 0, open, PendingIntent.FLAG_CANCEL_CURRENT);
 
-        return new Notification.Builder(this)
+        Notification.Builder builder = new Notification.Builder(this)
                 .setWhen(System.currentTimeMillis())
                 .setSmallIcon(R.drawable.ic_stat_device_access_video)
                 .setContentTitle(getString(R.string.recording_ready_to_share))
@@ -339,6 +361,13 @@ public class ScreencastService extends Service implements IScreencaster, Handler
                 .addAction(R.drawable.ic_share, getString(R.string.share),
                         PendingIntent.getActivity(this, 0, chooserIntent, PendingIntent.FLAG_CANCEL_CURRENT))
                 .setContentIntent(contentIntent);
+
+        // Build channel for O.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            builder.setChannelId(NOTIFICATION_CHANNEL_ID);
+        }
+
+        return builder;
     }
 
     @Override

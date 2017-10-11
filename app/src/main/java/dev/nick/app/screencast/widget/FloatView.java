@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
+import android.os.Build;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -118,7 +119,11 @@ public class FloatView extends FrameLayout {
         mLp.width = WindowManager.LayoutParams.WRAP_CONTENT;
         mLp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         mLp.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-        mLp.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+        //noinspection WrongConstant
+        mLp.type = Build.VERSION.SDK_INT
+                >= Build.VERSION_CODES.O ?
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+                : WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
 
         OnTouchListener touchListener = new OnTouchListener() {
             private float touchX;

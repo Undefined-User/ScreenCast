@@ -3,6 +3,7 @@ package dev.nick.app.screencast.control;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -37,17 +38,23 @@ public class FloatingControlService extends Service implements FloatingControlle
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        if (SettingsCompat.canDrawOverlays(Factory.get().getTopActivity())) {
-            show();
-        } else {
+        if (SettingsCompat.canDrawOverlays(Factory.get().getTopActivity())
+                || Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             try {
-                SettingsCompat.manageDrawOverlays(Factory.get().getTopActivity());
+                show();
+                return START_STICKY;
             } catch (Throwable e) {
-                Toast.makeText(getApplicationContext(), Log.getStackTraceString(e), Toast.LENGTH_LONG).show();
+                LoggerManager.getLogger(FloatingControlService.class).error(Log.getStackTraceString(e));
             }
-
-            SettingsProvider.get().setShowFloatControl(false);
         }
+
+        try {
+            SettingsCompat.manageDrawOverlays(Factory.get().getTopActivity());
+        } catch (Throwable e) {
+            Toast.makeText(getApplicationContext(), Log.getStackTraceString(e), Toast.LENGTH_LONG).show();
+        }
+
+        SettingsProvider.get().setShowFloatControl(false);
 
         return START_STICKY;
     }
