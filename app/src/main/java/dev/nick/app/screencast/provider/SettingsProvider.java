@@ -7,7 +7,6 @@ import android.os.Build;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.widget.Toast;
 
 import java.io.File;
 import java.util.Observable;

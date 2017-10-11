@@ -72,7 +72,7 @@ public class DrawerScreencastActivity extends ScreenCastActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        if (BuildConfig.DEBUG || !SettingsProvider.get().clickAD()) {
+        if (SettingsProvider.get().showAD() && BuildConfig.DEBUG || !SettingsProvider.get().clickAD()) {
             initAd(this, (ViewGroup) findViewById(R.id.adview_container));
         }
     }

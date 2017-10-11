@@ -80,6 +80,7 @@ public class Dashboards extends DashboardFragment implements TileListener {
         others.titleRes = R.string.category_others;
 
         others.addTile(new DonateTile(getActivity()));
+        others.addTile(new WithADTile(getActivity(), null));
         others.addTile(new PayListTile(getActivity()));
         others.addTile(new GetProTile(getActivity()));
         others.addTile(new LicenseTile(getContext(), this));

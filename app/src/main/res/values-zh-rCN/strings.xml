@@ -14,7 +14,7 @@
      limitations under the License.
 -->
 <resources>
-    <string name="app_name">屏幕录像</string>
+    <string name="app_name">EZ录屏</string>
     <string name="share">分享</string>
     <string name="stop">停止</string>
     <string name="insufficient_storage">存储空间不足</string>

@@ -27,16 +27,8 @@ class WithADTile extends QuickTile {
             protected void onCheckChanged(boolean checked) {
                 super.onCheckChanged(checked);
                 SettingsProvider.get().setShowAD(checked);
-                update();
-                setChecked(SettingsProvider.get().showAD());
             }
         };
         this.titleRes = R.string.title_with_ad;
-        this.summaryRes = R.string.summary_with_ad;
-        update();
-    }
-
-    private void update() {
-        getTileView().getSummaryTextView().setText(SettingsProvider.get().showAD() ? R.string.summary_add_on : R.string.summary_add_off);
     }
 }
