@@ -374,7 +374,6 @@ public abstract class SettingsProvider extends Observable {
 
         @Override
         public void setShowAD(boolean show) {
-            if (!show && !clickAD()) return;
             PreferenceManager.getDefaultSharedPreferences(Factory.get().getApplicationContext())
                     .edit().putBoolean(KEY_SHOW_AD, show).apply();
         }

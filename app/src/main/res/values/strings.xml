@@ -14,7 +14,7 @@
      limitations under the License.
 -->
 <resources>
-    <string name="app_name">Screen Recorder</string>
+    <string name="app_name">EZ Screen Recorder</string>
     <string name="share">Share</string>
     <string name="stop">Stop</string>
     <string name="insufficient_storage">Insufficient storage</string>
