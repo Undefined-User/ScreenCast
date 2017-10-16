@@ -14,7 +14,11 @@ public class ScreencastServiceProxy extends ServiceProxy implements IScreencaste
 
     private ScreencastServiceProxy(Context context) {
         super(context, new Intent(context, ScreencastService.class));
-        context.startService(new Intent(context, ScreencastService.class));
+        try {
+            context.startService(new Intent(context, ScreencastService.class));
+        } catch (Throwable e) {
+            // // FIXME: 2017/10/16  java.lang.IllegalStateException: Not allowed to start service Intent
+        }
     }
 
     public static void start(final Context context, final MediaProjection projection, final boolean withAudio) {

@@ -17,6 +17,7 @@
     <string name="app_name">屏幕录像</string>
     <string name="share">分享</string>
     <string name="stop">停止</string>
+    <string name="stop_start">停止/开始</string>
     <string name="insufficient_storage">存储空间不足</string>
     <string name="show_touches">显示触摸操作</string>
     <string name="hide_touches">隐藏触摸</string>

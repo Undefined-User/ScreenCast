@@ -1,0 +1,15 @@
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:icon="@mipmap/ic_ctl_start"
+        android:shortcutId="toggle"
+        android:shortcutLongLabel="@string/stop_start"
+        android:shortcutShortLabel="@string/stop_start">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="dev.nick.app.screencast.content.DialogScreenCastActivity"
+            android:targetPackage="dev.nick.app.screencast" />
+        <categories android:name="android.shortcut.screencast" />
+    </shortcut>
+    <!-- Specify more shortcuts here. -->
+</shortcuts>
