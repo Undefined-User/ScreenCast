@@ -14,7 +14,7 @@
      limitations under the License.
 -->
 <resources>
-    <string name="app_name">EZ Screen Recorder</string>
+    <string name="app_name">Screen Recorder</string>
     <string name="share">Share</string>
     <string name="stop">Stop</string>
     <string name="insufficient_storage">Insufficient storage</string>
@@ -115,7 +115,7 @@
     <string name="theme_def_dark">Default dark</string>
     <string name="theme_def_circle">Default Circle</string>
     <string name="elapse_time_zero">00:00</string>
-    <string name="title_pay_list">PAY list</string>
+    <string name="title_pay_list">Thanks</string>
     <string name="title_get_pro">Get pro version</string>
     <string name="summary_get_pro">Pro version is not available, click to see what we got</string>
     <string name="title_ad_area">AD</string>

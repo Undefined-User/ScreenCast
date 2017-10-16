@@ -108,10 +108,8 @@ public class ScreenCastActivity extends TransactionSafeActivity {
 
     @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_PHONE_STATE,
-            Manifest.permission.GET_TASKS,
-            Manifest.permission.ACCESS_NETWORK_STATE,
-            Manifest.permission.ACCESS_WIFI_STATE})
+            Manifest.permission.CAMERA,
+            Manifest.permission.RECORD_AUDIO})
     void initService() {
         mProjectionManager =
                 (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
@@ -193,7 +191,6 @@ public class ScreenCastActivity extends TransactionSafeActivity {
         setupAdapter();
         if ((SettingsProvider.get().getAppVersionNum() < SettingsProvider.APP_VERSION_INT)) {
             showPermissionDialogAndGo();
-            ScreenCastActivityPermissionsDispatcher.initServiceWithCheck(ScreenCastActivity.this);
         } else {
             ScreenCastActivityPermissionsDispatcher.readVideosWithCheck(ScreenCastActivity.this);
             ScreenCastActivityPermissionsDispatcher.initServiceWithCheck(ScreenCastActivity.this);
@@ -219,13 +216,14 @@ public class ScreenCastActivity extends TransactionSafeActivity {
     public void showPermissionDialogAndGo() {
         new MaterialStyledDialog.Builder(this)
                 .setIcon(R.drawable.ic_notifications_active_black_24dp)
+                .setHeaderDrawable(R.drawable.bg_default_profile_art)
                 .setDescription(R.string.summary_perm_require)
                 .setPositiveText(android.R.string.ok)
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        ScreenCastActivityPermissionsDispatcher.readVideosWithCheck(ScreenCastActivity.this);
                         ScreenCastActivityPermissionsDispatcher.initServiceWithCheck(ScreenCastActivity.this);
+                        ScreenCastActivityPermissionsDispatcher.readVideosWithCheck(ScreenCastActivity.this);
                     }
                 })
                 .setNegativeText(android.R.string.cancel)
@@ -337,6 +335,11 @@ public class ScreenCastActivity extends TransactionSafeActivity {
         if (resultCode != RESULT_OK) {
             return;
         }
+
+        if (mProjectionManager == null) {
+            return;
+        }
+
         if (requestCode == PERMISSION_CODE) {
             mMediaProjection = mProjectionManager.getMediaProjection(resultCode, data);
             mMediaProjection.unregisterCallback(projectionCallback);

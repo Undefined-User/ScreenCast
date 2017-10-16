@@ -4,7 +4,9 @@ import android.app.Service;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -12,11 +14,15 @@ import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import dev.nick.app.screencast.R;
+import dev.nick.app.screencast.app.Factory;
 import dev.nick.app.screencast.cast.IScreencaster;
 import dev.nick.app.screencast.cast.ScreencastServiceProxy;
+import dev.nick.app.screencast.control.FloatingControlService;
 import dev.nick.logger.LoggerManager;
+import ezy.assist.compat.SettingsCompat;
 
 public class CameraPreviewService extends Service {
 
@@ -89,17 +95,39 @@ public class CameraPreviewService extends Service {
         return mBinder;
     }
 
+    private void showPreviewChecked(WindowSize size) {
+        // Check permission.
+        if (SettingsCompat.canDrawOverlays(Factory.get().getTopActivity())
+                || Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            try {
+                showPreview(size);
+            } catch (Throwable e) {
+                LoggerManager.getLogger(FloatingControlService.class).error(Log.getStackTraceString(e));
+            }
+        } else {
+            try {
+                SettingsCompat.manageDrawOverlays(Factory.get().getTopActivity());
+            } catch (Throwable e) {
+                LoggerManager.getLogger(FloatingControlService.class).error(Log.getStackTraceString(e));
+            }
+        }
+    }
+
     public void showPreview(WindowSize size) {
         if (isShowing()) {
             return;
         }
+
         mSize = size;
         mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         mFloatView = new SoftwareCameraPreview(this);
         mFloatContainerParams = new LayoutParams(
                 mSize.w,
                 mSize.h,
-                LayoutParams.TYPE_TOAST,
+                Build.VERSION.SDK_INT
+                        >= Build.VERSION_CODES.O ?
+                        WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+                        : WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
                 LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT);
         mFloatContainerParams.y = 0;
@@ -171,7 +199,7 @@ public class CameraPreviewService extends Service {
         }
     }
 
-    class ServiceBinder extends Binder implements ICameraPreviewService {
+    private class ServiceBinder extends Binder implements ICameraPreviewService {
 
         @Override
         public void show(int sizeIndex) {
@@ -189,7 +217,7 @@ public class CameraPreviewService extends Service {
                 default:
                     throw new IllegalArgumentException("Bad size index:" + sizeIndex);
             }
-            CameraPreviewService.this.showPreview(size);
+            CameraPreviewService.this.showPreviewChecked(size);
         }
 
         @Override

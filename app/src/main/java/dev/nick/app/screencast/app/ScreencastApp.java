@@ -7,8 +7,6 @@ import android.util.Log;
 import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
 import com.github.hiteshsondhi88.libffmpeg.FFmpegLoadBinaryResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
-import com.xiaomi.ad.AdSdk;
-import com.xiaomi.ad.internal.common.LogLevel;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -44,10 +42,6 @@ public class ScreencastApp extends Application {
         LoggerManager.setDebugLevel(BuildConfig.DEBUG ? Log.VERBOSE : Log.ERROR);
         LoggerManager.setTagPrefix(ScreencastApp.class.getSimpleName());
 
-        // For AD start.
-        AdSdk.setDebugOn();
-        AdSdk.setLogLevel(LogLevel.B);
-        AdSdk.initialize(this, AD_APP_ID);
         try {
             LoggerManager.getLogger(ScreencastApp.class).info("checking assets");
             Collections.consumeRemaining(getAssets().list("test"), new Consumer<String>() {

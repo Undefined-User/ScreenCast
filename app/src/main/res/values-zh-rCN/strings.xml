@@ -14,7 +14,7 @@
      limitations under the License.
 -->
 <resources>
-    <string name="app_name">EZ录屏</string>
+    <string name="app_name">屏幕录像</string>
     <string name="share">分享</string>
     <string name="stop">停止</string>
     <string name="insufficient_storage">存储空间不足</string>
@@ -68,7 +68,7 @@
     <string name="title_app_license">许可</string>
     <string name="title_with_ad">支持开发者</string>
     <string name="title_perm_require">需要权限</string>
-    <string name="summary_perm_require">录制屏幕内容需要权限，接下来的权限申请页面请勾选允许，否则程序无法正常工作。\n另外很抱歉的说，我们现在集成了MI-AD来维持及其微弱的回报，希望你允许获取读取设备IMEI（电话）的权限，敬请理解！</string>
+    <string name="summary_perm_require">录制屏幕内容需要权限，接下来的权限申请页面请勾选允许，否则程序无法正常工作。</string>
     <string name="perm_require_no_mind">不再提醒</string>
     <string name="summary_audio">同时录制麦克风的声音</string>
     <string name="summary_start_delay">等待5s再开始录制</string>
@@ -76,7 +76,7 @@
     <string name="summary_storage">文件路径：%1$s</string>
     <string name="summary_camera">录制时显示预览窗</string>
     <string name="summary_with_ad">点击一次即可关闭</string>
-    <string name="summary_add_on">:) 好人呐</string>
+    <string name="summary_add_on">:)</string>
     <string name="summary_add_off">:(</string>
     <string name="summary_res_auto">自动</string>
     <string name="orientation_p">竖屏</string>
