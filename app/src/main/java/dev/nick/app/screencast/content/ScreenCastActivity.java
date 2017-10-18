@@ -54,9 +54,6 @@ import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
 import com.github.hiteshsondhi88.libffmpeg.FFmpegExecuteResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
 import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
-import com.github.johnpersano.supertoasts.library.Style;
-import com.github.johnpersano.supertoasts.library.SuperToast;
-import com.github.johnpersano.supertoasts.library.utils.PaletteUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -71,6 +68,7 @@ import dev.nick.app.screencast.modle.Video;
 import dev.nick.app.screencast.provider.SettingsProvider;
 import dev.nick.app.screencast.provider.VideoProvider;
 import dev.nick.app.screencast.tools.MediaTools;
+import dev.nick.app.screencast.widget.OneSecondToast;
 import dev.nick.app.screencast.widget.RecordingButton;
 import dev.nick.logger.Logger;
 import dev.nick.logger.LoggerManager;
@@ -93,6 +91,8 @@ public class ScreenCastActivity extends TransactionSafeActivity {
     private Adapter mAdapter;
     private boolean mIsCasting;
     private int mRemainingSeconds;
+
+    private OneSecondToast oneSecondToast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -195,17 +195,14 @@ public class ScreenCastActivity extends TransactionSafeActivity {
             ScreenCastActivityPermissionsDispatcher.readVideosWithCheck(ScreenCastActivity.this);
             ScreenCastActivityPermissionsDispatcher.initServiceWithCheck(ScreenCastActivity.this);
         }
+
+        oneSecondToast = new OneSecondToast();
     }
 
     protected void showCountdownIfNeeded(String content) {
         boolean showCD = SettingsProvider.get().showCD();
         if (showCD) {
-            SuperToast.cancelAllSuperToasts();
-            SuperToast.create(this, content, Style.DURATION_LONG, Style.red())
-                    .setText(content)
-                    .setFrame(Style.FRAME_KITKAT)
-                    .setColor(PaletteUtils.getSolidColor(PaletteUtils.MATERIAL_RED))
-                    .setAnimations(Style.ANIMATIONS_POP).show();
+            oneSecondToast.show(this, content);
         }
     }
 
@@ -298,8 +295,8 @@ public class ScreenCastActivity extends TransactionSafeActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            mLogger.debug("Tick");
-                            showCountdownIfNeeded(String.valueOf(mRemainingSeconds));
+                            mLogger.debug("Tick:" + mRemainingSeconds);
+                            showCountdownIfNeeded(String.valueOf(mRemainingSeconds == 0 ? "GO" : mRemainingSeconds));
                             mRemainingSeconds--;
                         }
                     });
@@ -308,7 +305,6 @@ public class ScreenCastActivity extends TransactionSafeActivity {
                 @Override
                 public void onFinish() {
                     mRemainingSeconds = 0;
-                    SuperToast.cancelAllSuperToasts();
                     mFab.show();
                 }
             }.start();

@@ -9,8 +9,8 @@ android {
         applicationId "dev.nick.app.screencast"
         minSdkVersion 21
         targetSdkVersion 26
-        versionCode 142
-        versionName "14.2"
+        versionCode 143
+        versionName "14.3"
     }
 
     buildTypes {
@@ -37,7 +37,6 @@ dependencies {
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.android.support:design:26.0.0-alpha1'
-    compile 'com.github.johnpersano:supertoasts:2.0'
     compile project(':tiles')
     compile project(':logger')
     provided 'de.robv.android.xposed:api:82'
