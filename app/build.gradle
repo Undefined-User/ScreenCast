@@ -9,8 +9,8 @@ android {
         applicationId "dev.nick.app.screencast"
         minSdkVersion 21
         targetSdkVersion 26
-        versionCode 143
-        versionName "14.3"
+        versionCode 144
+        versionName "14.4"
     }
 
     buildTypes {

@@ -499,13 +499,7 @@ public class ScreenCastActivity extends TransactionSafeActivity {
                                             new File(item.getPath())));
                                     break;
                                 case R.id.action_remove:
-                                    ThreadUtil.getWorkThreadHandler().post(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            new File(item.getPath()).delete();
-                                            remove(holder.getAdapterPosition());
-                                        }
-                                    });
+                                    onRequestRemove(item, holder.getAdapterPosition());
                                     break;
                                 case R.id.action_rename:
                                     ThreadUtil.getMainThreadHandler().post(new Runnable() {
@@ -642,6 +636,30 @@ public class ScreenCastActivity extends TransactionSafeActivity {
                 Toast.makeText(ScreenCastActivity.this, "FFmpegCommandAlreadyRunningException", Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+    private void onRequestRemove(final Video item, final int position) {
+        new AlertDialog.Builder(ScreenCastActivity.this)
+                .setTitle(R.string.action_remove)
+                .setMessage(R.string.message_remove)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        ThreadUtil.getWorkThreadHandler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                new File(item.getPath()).delete();
+                                mAdapter.remove(position);
+                            }
+                        });
+
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
+
+
     }
 
 }
