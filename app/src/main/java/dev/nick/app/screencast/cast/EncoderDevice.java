@@ -41,12 +41,12 @@ import java.util.ArrayList;
 
 import dev.nick.app.screencast.R;
 import dev.nick.app.screencast.provider.SettingsProvider;
-import dev.nick.logger.Logger;
-import dev.nick.logger.LoggerManager;
 import dev.nick.library.safesax.Element;
 import dev.nick.library.safesax.ElementListener;
 import dev.nick.library.safesax.Parsers;
 import dev.nick.library.safesax.RootElement;
+import dev.nick.logger.Logger;
+import dev.nick.logger.LoggerManager;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 abstract class EncoderDevice {
@@ -86,7 +86,7 @@ abstract class EncoderDevice {
         LoggerManager.getLogger(getClass()).info("DPI=" + dpi);
         return projection.createVirtualDisplay(name,
                 width, height, dpi,
-                DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
+                DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC,
                 surface, null /*Callbacks*/, null /*Handler*/);
     }
 
